@@ -163,3 +163,4 @@ int Board::getPlayerVal(int x, int y) const {
 bool Board::slotFull(int slot) const {
 	return(board[0][slot] != NO_VAL||board[0][slot]==O_VAL||board[0][slot]==X_VAL);
 }
+

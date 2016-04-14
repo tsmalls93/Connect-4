@@ -54,6 +54,7 @@ public:
         return 0;
     }
     
+    
     void set(int x, int y, int player){
         board[y][x] = player;
     }
