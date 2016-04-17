@@ -43,9 +43,9 @@ public:
     bool slotFull(int slot) const;
     
     int getHeightOfSlot(int slot) const{
-        for (int i = 5; i >= 0; i--) {
-            if (getPlayerVal(slot, i) == NO_VAL) {
-                if(i-1>0)
+        for (int i = 0; i < 6; i++) {
+            if (getPlayerVal(slot, i) != NO_VAL) {
+                if(i-1>=0)
                     return i-1;
                 else
                     return 0;

@@ -15,7 +15,7 @@ AI::AI(){
 }
 
 void AI::performMove(Board &board){
-    AIMove best = alphaBeta(board, 0, CPU, -INFINITY, INFINITY);
+    AIMove best = alphaBeta(board, 0, CPU, -999999999, 999999999);
     board.dropInSlot(best.slot, CPU);
 }
 
@@ -32,7 +32,7 @@ AIMove AI::alphaBeta(Board board, int depth, int player, int alpha, int beta){
     if(depth == 6){
         vector<AIMove> moves;
         for(int i=0; i<7; i++){
-            moves.push_back(scoreMove(i, player));
+            moves.push_back(scoreMove(board, i, player));
         }
         AIMove best;
         best.score = 0;
@@ -84,9 +84,12 @@ AIMove AI::alphaBeta(Board board, int depth, int player, int alpha, int beta){
     }
 
 }
-AIMove AI::scoreMove(int slot, int player){
+AIMove AI::scoreMove(Board Board, int slot, int player){
     AIMove move;
     //Ranked top to bottom
+    //Check slot position using int Board::getHeightOfSlot(int slot)
+    //Or you could see what would happen when you drop it in the slot
+    //Basically scan for what a move in this slot would do
     //Look for three in a row to win
     
     //Now the enemy three in a row to block
