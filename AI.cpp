@@ -84,32 +84,60 @@ AIMove AI::alphaBeta(Board board, int depth, int player, int alpha, int beta){
     }
 
 }
-AIMove AI::scoreMove(Board Board, int slot, int player){
+AIMove AI::scoreMove(Board board, int slot, int player){
     AIMove move;
+    move.slot = slot;
+    int j = board.getHeightOfSlot(slot);
     //Ranked top to bottom
     //Check slot position using int Board::getHeightOfSlot(int slot)
     //Or you could see what would happen when you drop it in the slot
     //Basically scan for what a move in this slot would do
     //Look for three in a row to win
     //horizontal
+    if((board.getPlayerVal(slot+1, j)==player&&board.getPlayerVal(slot+2, j)==player&&board.getPlayerVal(slot+3, j)==player)
+       ||(board.getPlayerVal(slot+1, j)==player&&board.getPlayerVal(slot+2, j)==player&&board.getPlayerVal(slot+3, j)==player)){
+        move.score = 10;
+        return move;
+    }
+    //horizontal disjoint  x xx and xx x
+    if((board.getPlayerVal(slot-1, j)==player&&board.getPlayerVal(slot+1, j)==player&&board.getPlayerVal(slot+2, j)==player)
+       ||(board.getPlayerVal(slot-1, j)==player&&board.getPlayerVal(slot-2, j)==player&&board.getPlayerVal(slot+1, j)==player)){
+        move.score = 10;
+        return move;
+    }
     
-    //horizontal disjoint case 1 x xx
-    
-    //horizontal disjoint case 2 xx x
-    
-    //vetical
-    
-    //vertical disjoint case 1
-    
-    //vertical disjoint case 2
-    
+    //vertical
+    if((board.getPlayerVal(slot, j-1)==player&&board.getPlayerVal(slot, j-2)==player&&board.getPlayerVal(slot, j-3)==player)){
+            move.score = 10;
+            return move;
+        }
     //diagonal
-    
+    if((board.getPlayerVal(slot+1, j-1)==player&&board.getPlayerVal(slot+2, j-2)==player&&board.getPlayerVal(slot+3, j-3)==player)){
+        move.score = 10;
+        return move;
+    }
+    if((board.getPlayerVal(slot-1, j-1)==player&&board.getPlayerVal(slot-2, j-2)==player&&board.getPlayerVal(slot-3, j-3)==player)){
+        move.score = 10;
+        return move;
+    }
     //diagonal disjoint case 1
-    
+    if((board.getPlayerVal(slot-1, j+1)==player)&&board.getPlayerVal(slot-2, j+2)==player&&board.getPlayerVal(slot+1, j-1)==player){
+        move.score = 10;
+        return move;
+    }
+    if((board.getPlayerVal(slot+1, j+1)==player)&&board.getPlayerVal(slot+2, j+2)==player&&board.getPlayerVal(slot-1, j-1)==player){
+        move.score = 10;
+        return move;
+    }
     //diagonal disjoint case 2
-    
-    
+    if((board.getPlayerVal(slot-1, j+1)==player)&&board.getPlayerVal(slot+1, j-1)==player&&board.getPlayerVal(slot+2, j-2)==player){
+        move.score = 10;
+        return move;
+    }
+    if((board.getPlayerVal(slot+1, j+1)==player)&&board.getPlayerVal(slot-1, j-1)==player&&board.getPlayerVal(slot-2, j-2)==player){
+        move.score = 10;
+        return move;
+    }
     //
     //Now the enemy three in a row to block
     //horizontal
@@ -119,10 +147,7 @@ AIMove AI::scoreMove(Board Board, int slot, int player){
     //horizontal disjoint case 2 xx x
     
     //vertical
-    
-    //vertical disjoint case 1
-    
-    //vertical disjoint case 2
+
     
     //diagonal
     
@@ -138,9 +163,7 @@ AIMove AI::scoreMove(Board Board, int slot, int player){
     //horizontal disjoint x x
     
     //vertical
-    
-    //vertical disjoint
-    
+
     //diagonal
     
     //diagonal disjoint
@@ -153,8 +176,6 @@ AIMove AI::scoreMove(Board Board, int slot, int player){
     //horizontal disjoint x x
     
     //vertical
-    
-    //vertical disjoint
     
     //diagonal
     
