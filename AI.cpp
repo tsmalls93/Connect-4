@@ -110,7 +110,7 @@ AIMove AI::scoreMove(Board board, int slot, int player){
     }
     
     //vertical
-    if((board.getPlayerVal(slot, j-1)==player&&board.getPlayerVal(slot, j-2)==player&&board.getPlayerVal(slot, j-3)==player)){
+    if((board.getPlayerVal(slot, j+1)==player&&board.getPlayerVal(slot, j+2)==player&&board.getPlayerVal(slot, j+3)==player)){
             move.score = 10;
             return move;
         }
@@ -144,27 +144,64 @@ AIMove AI::scoreMove(Board board, int slot, int player){
     //
     //Now the enemy three in a row to block
     //horizontal
-    
-    //horizontal disjoint case 1 x xx
-    
-    //horizontal disjoint case 2 xx x
+    if((board.getPlayerVal(slot+1, j)==HUMAN&&board.getPlayerVal(slot+2, j)==HUMAN&&board.getPlayerVal(slot+3, j)==HUMAN)
+       ||(board.getPlayerVal(slot-1, j)==HUMAN&&board.getPlayerVal(slot-2, j)==HUMAN&&board.getPlayerVal(slot-3, j)==HUMAN)){
+        move.score = 10;
+        return move;
+    }
+    //horizontal disjoint  x xx and xx x
+    if((board.getPlayerVal(slot-1, j)==HUMAN&&board.getPlayerVal(slot+1, j)==HUMAN&&board.getPlayerVal(slot+2, j)==HUMAN)
+       ||(board.getPlayerVal(slot-1, j)==HUMAN&&board.getPlayerVal(slot-2, j)==HUMAN&&board.getPlayerVal(slot+1, j)==HUMAN)){
+        move.score = 10;
+        return move;
+    }
     
     //vertical
-
-    
+    if((board.getPlayerVal(slot, j+1)==HUMAN&&board.getPlayerVal(slot, j+2)==HUMAN&&board.getPlayerVal(slot, j+3)==HUMAN)){
+        move.score = 10;
+        return move;
+    }
     //diagonal
-    
+    if((board.getPlayerVal(slot+1, j-1)==HUMAN&&board.getPlayerVal(slot+2, j-2)==HUMAN&&board.getPlayerVal(slot+3, j-3)==HUMAN)){
+        move.score = 10;
+        return move;
+    }
+    if((board.getPlayerVal(slot-1, j-1)==HUMAN&&board.getPlayerVal(slot-2, j-2)==HUMAN&&board.getPlayerVal(slot-3, j-3)==HUMAN)){
+        move.score = 10;
+        return move;
+    }
     //diagonal disjoint case 1
-    
+    if((board.getPlayerVal(slot-1, j+1)==HUMAN)&&board.getPlayerVal(slot-2, j+2)==HUMAN&&board.getPlayerVal(slot+1, j-1)==player){
+        move.score = 10;
+        return move;
+    }
+    if((board.getPlayerVal(slot+1, j+1)==HUMAN)&&board.getPlayerVal(slot+2, j+2)==HUMAN&&board.getPlayerVal(slot-1, j-1)==player){
+        move.score = 10;
+        return move;
+    }
     //diagonal disjoint case 2
-    
-    
+    if((board.getPlayerVal(slot-1, j+1)==HUMAN)&&board.getPlayerVal(slot+1, j-1)==HUMAN&&board.getPlayerVal(slot+2, j-2)==HUMAN){
+        move.score = 10;
+        return move;
+    }
+    if((board.getPlayerVal(slot+1, j+1)==HUMAN)&&board.getPlayerVal(slot-1, j-1)==HUMAN&&board.getPlayerVal(slot-2, j-2)==HUMAN){
+        move.score = 10;
+        return move;
+    }
     //
     //two in a row to make three
     //horizontal
-    
+    if((board.getPlayerVal(slot+1, j)==player&&board.getPlayerVal(slot+2, j)==player
+        )||(board.getPlayerVal(slot-1, j)==player&&board.getPlayerVal(slot-2, j)==player)){
+        move.score = 9;
+        return move;
+    }
     //horizontal disjoint x x
-    
+    if(board.getPlayerVal(slot-1, j)==player&&board.getPlayerVal(slot+1, j)){
+        move.score = 9;
+        return move;
+    }
+        
     //vertical
 
     //diagonal
