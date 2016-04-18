@@ -18,7 +18,9 @@ void AI::performMove(Board &board){
     AIMove best = alphaBeta(board, 0, CPU, -999999999, 999999999);
     board.dropInSlot(best.slot, CPU);
 }
-
+//Main AI algorithm alphaBeta creates a tree by recursive function calls
+//Uses minimax algorithm as well but prunes when beta becomes less than alpha
+//At which point it decides that move is no good
 AIMove AI::alphaBeta(Board board, int depth, int player, int alpha, int beta){
     //Base Case check (win, loss, full board)
     int base = board.checkVictory();
@@ -84,6 +86,7 @@ AIMove AI::alphaBeta(Board board, int depth, int player, int alpha, int beta){
     }
 
 }
+//When the computer reaches the depth score the move and return move
 AIMove AI::scoreMove(Board board, int slot, int player){
     AIMove move;
     move.slot = slot;
@@ -95,7 +98,7 @@ AIMove AI::scoreMove(Board board, int slot, int player){
     //Look for three in a row to win
     //horizontal
     if((board.getPlayerVal(slot+1, j)==player&&board.getPlayerVal(slot+2, j)==player&&board.getPlayerVal(slot+3, j)==player)
-       ||(board.getPlayerVal(slot+1, j)==player&&board.getPlayerVal(slot+2, j)==player&&board.getPlayerVal(slot+3, j)==player)){
+       ||(board.getPlayerVal(slot-1, j)==player&&board.getPlayerVal(slot-2, j)==player&&board.getPlayerVal(slot-3, j)==player)){
         move.score = 10;
         return move;
     }

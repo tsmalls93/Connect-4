@@ -7,7 +7,7 @@
 //
 
 #include "Board.h"
-
+//Set size of board
 void Board::init() {
 	board.resize(6);
 	for (int i = 0; i<6; i++) {
@@ -15,7 +15,7 @@ void Board::init() {
 	}
 	clear();
 }
-
+//Clear the board
 void Board::clear() {
 	for (int j = 0; j<6; j++) {
 		for (int i = 0; i<7; i++) {
@@ -24,7 +24,7 @@ void Board::clear() {
 		}
 	}
 }
-
+//Print the board
 void Board::print() const {
 	for (int j = 0; j<6; j++) {
 		for (int i = 0; i<7; i++) {
@@ -34,7 +34,7 @@ void Board::print() const {
 	}
 	std::cout << "1 2 3 4 5 6 7" << std::endl;
 }
-
+//Is the game over?
 int Board::checkVictory() const {
 	bool isTie = true;
     for (int i = 0; i<7; i++) {
@@ -131,7 +131,7 @@ int Board::checkVictory() const {
         return NO_VAL;
     }
 }
-
+//Stack values on top of each other
 void Board::dropInSlot(int slot, int player) {
 	if (player == X_VAL) {
 		//loop through the rows of the slot
@@ -151,7 +151,7 @@ void Board::dropInSlot(int slot, int player) {
 		}
 	}
 }
-
+//Get the value of the board position
 int Board::getPlayerVal(int x, int y) const {
 	if (x<0 || x>6 || y<0 || y>5) {
 		return NO_VAL;
@@ -159,7 +159,7 @@ int Board::getPlayerVal(int x, int y) const {
 	else
 		return board[y][x];
 }
-
+//Is the slot full?
 bool Board::slotFull(int slot) const {
 	return(board[0][slot] != NO_VAL||board[0][slot]==O_VAL||board[0][slot]==X_VAL);
 }

@@ -7,7 +7,7 @@
 //
 
 #include "MainGame.h"
-
+//Main game loob
 void MainGame::run(){
     init();
     while (gameState != GameState::EXIT){
@@ -32,14 +32,14 @@ void MainGame::run(){
         }
     }
 }
-
+//Start the game
 void MainGame::init(){
     gameState = GameState::PLAYING;
     connect4.init();
     currentPlayer = X_VAL;
     std::cout << "Welcome to Connect 4" << std::endl;
 }
-
+//Human move
 void MainGame::playerMove(int player){
     int slot;
     std::cout << "Enter slot number: ";
@@ -61,11 +61,11 @@ void MainGame::playerMove(int player){
     }
     connect4.dropInSlot(slot-1, player);
 }
-
+//CPU move
 void MainGame::aiMove(){
     ai.performMove(connect4);
 }
-
+//Switch players
 void MainGame::changePlayer(){
     if (currentPlayer == X_VAL) {
         currentPlayer = O_VAL;
@@ -73,7 +73,7 @@ void MainGame::changePlayer(){
         currentPlayer = X_VAL;
     }
 }
-
+//Game over
 void MainGame::endGame(bool wasTie){
     
     connect4.print();
