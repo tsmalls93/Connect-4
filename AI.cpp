@@ -91,24 +91,101 @@ AIMove AI::scoreMove(Board Board, int slot, int player){
     //Or you could see what would happen when you drop it in the slot
     //Basically scan for what a move in this slot would do
     //Look for three in a row to win
+    //horizontal
     
+    //horizontal disjoint case 1 x xx
+    
+    //horizontal disjoint case 2 xx x
+    
+    //vetical
+    
+    //vertical disjoint case 1
+    
+    //vertical disjoint case 2
+    
+    //diagonal
+    
+    //diagonal disjoint case 1
+    
+    //diagonal disjoint case 2
+    
+    
+    //
     //Now the enemy three in a row to block
+    //horizontal
     
+    //horizontal disjoint case 1 x xx
+    
+    //horizontal disjoint case 2 xx x
+    
+    //vertical
+    
+    //vertical disjoint case 1
+    
+    //vertical disjoint case 2
+    
+    //diagonal
+    
+    //diagonal disjoint case 1
+    
+    //diagonal disjoint case 2
+    
+    
+    //
     //two in a row to make three
+    //horizontal
     
+    //horizontal disjoint x x
+    
+    //vertical
+    
+    //vertical disjoint
+    
+    //diagonal
+    
+    //diagonal disjoint
+    
+    
+    //
     //enemy two in a row to block enemy three
+    //horizontal
     
+    //horizontal disjoint x x
+    
+    //vertical
+    
+    //vertical disjoint
+    
+    //diagonal
+    
+    //diagonal disjoint
+    
+    
+    //
     //one to make two
+    //horizontal
+    
+    //vertical
+    
+    //diagonal
     
     //enemy one to block enemy two
+    //horizontal
     
+    //vertical
+    
+    //diagonal
+    
+    //
     //center available?
     
+    
+    //
     //corner available?
     
     
     
-    //Score enemy
+    //Score enemy (negative)
     if (player==X_VAL){
         move.score=-move.score;
     }
