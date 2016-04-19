@@ -22,36 +22,16 @@ void AI::performMove(Board &board){
 //Uses minimax algorithm as well but prunes when beta becomes less than alpha
 //At which point it decides that move is no good
 AIMove AI::alphaBeta(Board board, int depth, int player, int alpha, int beta){
-    //Base Case check (win, loss, full board)
-    int base = board.checkVictory();
-    if (base == CPU)
-        return AIMove(10);
-    else if (base == HUMAN)
-        return AIMove(-10);
-    else if (base == TIE)
-        return AIMove(0);
+//    //Base Case check (win, loss, full board)
+//    int base = board.checkVictory();
+//    if (base == CPU)
+//        return AIMove(10);
+//    else if (base == HUMAN)
+//        return AIMove(-10);
+//    else if (base == TIE)
+//        return AIMove(0);
     //If max depth reached score the board
-    if(depth == 6){
-        vector<AIMove> moves;
-        for(int i=0; i<7; i++){
-            if(!board.slotFull(i)){
-                moves.push_back(scoreMove(board, i));
-            } else {
-                AIMove no;
-                no.score = -1;
-                no.slot = i;
-            }
-        }
-        AIMove best;
-        best.score = 0;
-        for(int i=0;i<7;i++){
-            if(moves[i].score>best.score){
-                best.score = moves[i].score;
-                best.slot = moves[i].slot;
-            }
-        }
-        return best;
-    }
+
     
     vector<AIMove> moves; //store moves
     AIMove move;
@@ -61,6 +41,40 @@ AIMove AI::alphaBeta(Board board, int depth, int player, int alpha, int beta){
             if(!board.slotFull(i)){
                 move.slot = i;
                 board.dropInSlot(i, player); //place marker on imaginary game board
+                board.dropInSlot(i, player);
+                int base = board.checkVictory();
+                if (base == CPU){
+                    move.score = 10;
+                    return move;
+                }
+                else if (base == HUMAN){
+                    move.score = -10;
+                    return move;
+                }
+                else if (base == TIE){
+                    move.score = 0;
+                    return move;
+                }else if(depth == 6){
+                    vector<AIMove> moves;
+                    for(int i=0; i<7; i++){
+                        if(!board.slotFull(i)){
+                            moves.push_back(scoreMove(board, i));
+                        } else {
+                            AIMove no;
+                            no.score = -1000;
+                            no.slot = i;
+                        }
+                    }
+                    AIMove best;
+                    best.score = 0;
+                    for(int i=0;i<7;i++){
+                        if(moves[i].score>best.score){
+                            best.score = moves[i].score;
+                            best.slot = moves[i].slot;
+                        }
+                    }
+                    return best;
+                }
                 move.score = max(alpha, alphaBeta(board, depth+1, HUMAN, alpha, beta).score);
                 alpha = max(alpha, move.score);
                 if (beta <= alpha)
@@ -77,6 +91,19 @@ AIMove AI::alphaBeta(Board board, int depth, int player, int alpha, int beta){
             if(!board.slotFull(i)){
                 move.slot = i;
                 board.dropInSlot(i, player);
+                int base = board.checkVictory();
+                if (base == CPU){
+                    move.score = 10;
+                    return move;
+                }
+                else if (base == HUMAN){
+                    move.score = -10;
+                    return move;
+                }
+                else if (base == TIE){
+                    move.score = 0;
+                    return move;
+                }
                 move.score = min(beta, alphaBeta(board, depth+1, CPU, alpha, beta).score);
                 beta = min(beta, move.score);
                 if (beta <= alpha)
@@ -278,17 +305,17 @@ AIMove AI::scoreMove(Board &board, int slot){
     //enemy one to block enemy two
     //horizontal
     if((board.getPlayerVal(slot+1, j)==HUMAN)||(board.getPlayerVal(slot-1, j)==HUMAN)){
-        move.score = 6;
+        move.score = 5;
         return move;
     }
     //vertical
     if((board.getPlayerVal(slot, j+1)==HUMAN)){
-        move.score = 6;
+        move.score = 5;
         return move;
     }
     //diagonal
     if((board.getPlayerVal(slot-1, j+1)==HUMAN)||(board.getPlayerVal(slot+1,j+1)==HUMAN)){
-        move.score = 6;
+        move.score = 5;
         return move;
     }
     //
