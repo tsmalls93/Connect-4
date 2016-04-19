@@ -47,13 +47,10 @@ public:
             if (getPlayerVal(slot, i) != NO_VAL) {
                 if(i-1>=0)
                     return i-1;
-                else
-                    return 0;
             }
         }
-        return 0;
+        return -1;
     }
-    
     
     void set(int x, int y, int player){
         board[y][x] = player;

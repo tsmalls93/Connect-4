@@ -22,14 +22,14 @@ struct AIMove {
 
 class AI {
 public:
-    //Perform move given by alphaBeta
     AI();
+    //Perform move given by alphaBeta
     void performMove(Board &board);
     
 private:
     //main game tree function (alpha-beta minimax)
     AIMove alphaBeta(Board board, int depth, int player, int alpha, int beta);
-    AIMove scoreMove(Board board, int slot, int player);
+    AIMove scoreMove(Board &board, int slot);
     int CPU;
     int HUMAN;
 };

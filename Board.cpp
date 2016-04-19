@@ -28,9 +28,16 @@ void Board::clear() {
 void Board::print() const {
 	for (int j = 0; j<6; j++) {
 		for (int i = 0; i<7; i++) {
-			std::cout << board[j][i] << " ";
+            if (getPlayerVal(i, j)==NO_VAL)
+                std::cout << " " << "|";
+            else if(getPlayerVal(i, j)==X_VAL){
+                std::cout << "X" << "|";
+            } else {
+                std::cout << "O" << "|";
+            }
 		}
 		std::cout << std::endl;
+        std::cout <<"--------------" << std::endl;
 	}
 	std::cout << "1 2 3 4 5 6 7" << std::endl;
 }
@@ -123,7 +130,7 @@ int Board::checkVictory() const {
         }
         for(int j=0; j<6; j++){
             for(int i=0; i<7; i++){
-                if(getPlayerVal(i, j)==X_VAL&&getPlayerVal(i-1, j-1)==O_VAL&&getPlayerVal(i-2, j-2)==O_VAL&&getPlayerVal(i-3, j-3)==O_VAL){
+                if(getPlayerVal(i, j)==O_VAL&&getPlayerVal(i-1, j-1)==O_VAL&&getPlayerVal(i-2, j-2)==O_VAL&&getPlayerVal(i-3, j-3)==O_VAL){
                     return O_VAL;
                 }
             }
