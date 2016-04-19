@@ -26,7 +26,9 @@ void Board::clear() {
 }
 //Print the board
 void Board::print() const {
+    std::cout <<"---------------" << std::endl;
 	for (int j = 0; j<6; j++) {
+        std::cout << "|";
 		for (int i = 0; i<7; i++) {
             if (getPlayerVal(i, j)==NO_VAL)
                 std::cout << " " << "|";
@@ -37,9 +39,9 @@ void Board::print() const {
             }
 		}
 		std::cout << std::endl;
-        std::cout <<"--------------" << std::endl;
+        std::cout <<"---------------" << std::endl;
 	}
-	std::cout << "1 2 3 4 5 6 7" << std::endl;
+	std::cout << " 1 2 3 4 5 6 7" << std::endl;
 }
 //Is the game over?
 int Board::checkVictory() const {
