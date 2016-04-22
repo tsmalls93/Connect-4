@@ -55,6 +55,8 @@ public:
     void set(int x, int y, int player){
         board[y][x] = player;
     }
+    int scoreMove();
+    int** findAllLegalMoves();
 private:
     std::vector<std::vector<int> > board;
 };

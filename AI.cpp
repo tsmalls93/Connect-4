@@ -15,21 +15,26 @@ AI::AI(){
 }
 
 void AI::performMove(Board &board){
-    AIMove best = alphaBeta(board, 0, CPU, -999999999, 999999999);
+    AIMove alpha, beta;
+    alpha.score = INT_MIN;
+    alpha.slot = 0;
+    beta.score = INT_MAX;
+    beta.slot = 0;
+    AIMove best = alphaBeta(board, 0, CPU, alpha, beta);
     board.dropInSlot(best.slot, CPU);
 }
 //Main AI algorithm alphaBeta creates a tree by recursive function calls
 //Uses minimax algorithm as well but prunes when beta becomes less than alpha
 //At which point it decides that move is no good
-AIMove AI::alphaBeta(Board board, int depth, int player, int alpha, int beta){
+AIMove AI::alphaBeta(Board board, int depth, int player, AIMove alpha, AIMove beta){
     AIMove move;
     if (player == CPU){
         move.score = -99999999;
         for(int i = 0; i<7; i++){
             if(!board.slotFull(i)){
                 move.slot = i;
-                board.dropInSlot(i, player); //place marker on imaginary game board
-                board.dropInSlot(i, player);
+                board.dropInSlot(i, CPU); //place marker on imaginary game board
+                board.dropInSlot(i, CPU);
                 int base = board.checkVictory();
                 if (base == CPU){
                     move.score = 99999999;
@@ -43,42 +48,27 @@ AIMove AI::alphaBeta(Board board, int depth, int player, int alpha, int beta){
                     move.score = 0;
                     return move;
                 }else if(depth == 10){
-                    vector<AIMove> moves;
-                    for(int i=0; i<7; i++){
-                        if(!board.slotFull(i)){
-                            moves.push_back(scoreMove(board, i));
-                        } else {
-                            AIMove no;
-                            no.score = -99999999;
-                            no.slot = i;
-                        }
-                    }
-                    AIMove best;
-                    best.score = 0;
-                    for(int i=0;i<7;i++){
-                        if(moves[i].score>best.score){
-                            best.score = moves[i].score;
-                            best.slot = moves[i].slot;
-                        }
-                    }
-                    return best;
+                    return board.scoreMove();
                 }
-                move.score = max(alpha, alphaBeta(board, depth+1, HUMAN, alpha, beta).score);
-                alpha = max(alpha, move.score);
-                if (beta <= alpha)
-                    break; // beta cut-off
+                AIMove tmp = alphaBeta(board, depth+1, CPU, alpha, beta);
+                if (tmp.score > alpha.score){
+                    alpha = tmp;
+                }
+                if (beta.score <= alpha.score)
+                    return alpha; // beta cut-off
             }
+            
             int j = board.getHeightOfSlot(i);
-            board.set(i, j, 0);
+            board.set(i, j+1, 0);
         }
-        move.score = alpha;
-        return move;
+        return alpha;
     } else {
         move.score = 99999999;
         for(int i=0; i<7; i++){
             if(!board.slotFull(i)){
                 move.slot = i;
-                board.dropInSlot(i, player);
+                board.dropInSlot(i, HUMAN);
+                board.dropInSlot(i, HUMAN);
                 int base = board.checkVictory();
                 if (base == CPU){
                     move.score = 99999999;
@@ -92,299 +82,153 @@ AIMove AI::alphaBeta(Board board, int depth, int player, int alpha, int beta){
                     move.score = 0;
                     return move;
                 }
-                move.score = min(beta, alphaBeta(board, depth+1, CPU, alpha, beta).score);
-                beta = min(beta, move.score);
-                if (beta <= alpha)
-                    break; //alpha cut-off
+                AIMove tmp = alphaBeta(board, depth+1, CPU, alpha, beta);
+                if (tmp.score < beta.score)
+                    beta = tmp;
+                if (beta.score <= alpha.score)
+                    return beta; //alpha cut-off
             }
             int j = board.getHeightOfSlot(i);
-            board.set(i, j, 0);
+            board.set(i, j+1, 0);
         }
-        move.score = beta;
-        return move;
+        return beta;
     }
+}
 
-}
 //When the computer reaches the depth score the move and return move
-AIMove AI::scoreMove(Board &board, int slot){
-    AIMove move;
-    move.slot = slot;
-    int j = board.getHeightOfSlot(slot);
-    //Ranked top to bottom
-    //Check slot position using int Board::getHeightOfSlot(int slot)
-    //Or you could see what would happen when you drop it in the slot
-    //Basically scan for what a move in this slot would do
-    //Look for three in a row to win
-    //horizontal
-    if((board.getPlayerVal(slot+1, j)==CPU&&board.getPlayerVal(slot+2, j)==CPU&&board.getPlayerVal(slot+3, j)==CPU)
-       ||(board.getPlayerVal(slot-1, j)==CPU&&board.getPlayerVal(slot-2, j)==CPU&&board.getPlayerVal(slot-3, j)==CPU)){
-        move.score = 10;
-        return move;
-    }
-    //horizontal disjoint  x xx and xx x
-    else if((board.getPlayerVal(slot-1, j)==CPU&&board.getPlayerVal(slot+1, j)==CPU&&board.getPlayerVal(slot+2, j)==CPU)
-       ||(board.getPlayerVal(slot-1, j)==CPU&&board.getPlayerVal(slot-2, j)==CPU&&board.getPlayerVal(slot+1, j)==CPU)){
-        move.score = 10;
-        return move;
-    }
     
-    //vertical
-    else if((board.getPlayerVal(slot, j+1)==CPU&&board.getPlayerVal(slot, j+2)==CPU&&board.getPlayerVal(slot, j+3)==CPU)){
-            move.score = 10;
-            return move;
-        }
-    //diagonal
-    else if((board.getPlayerVal(slot+1, j-1)==CPU&&board.getPlayerVal(slot+2, j-2)==CPU&&board.getPlayerVal(slot+3, j-3)==CPU)){
-        move.score = 10;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j-1)==CPU&&board.getPlayerVal(slot-2, j-2)==CPU&&board.getPlayerVal(slot-3, j-3)==CPU)){
-        move.score = 10;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j+1)==CPU&&board.getPlayerVal(slot+2, j+2)==CPU&&board.getPlayerVal(slot+3, j+3)==CPU)){
-        move.score = 10;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j+1)==CPU&&board.getPlayerVal(slot-2, j+2)==CPU&&board.getPlayerVal(slot-3, j+3)==CPU)){
-        move.score = 10;
-        return move;
-    }
-    //diagonal disjoint case 1 xx x
-    else if((board.getPlayerVal(slot-1, j+1)==CPU)&&board.getPlayerVal(slot-2, j+2)==CPU&&board.getPlayerVal(slot+1, j-1)==CPU){
-        move.score = 10;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j+1)==CPU)&&board.getPlayerVal(slot+2, j+2)==CPU&&board.getPlayerVal(slot-1, j-1)==CPU){
-        move.score = 10;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j-1)==CPU)&&board.getPlayerVal(slot-2, j-2)==CPU&&board.getPlayerVal(slot+1, j+1)==CPU){
-        move.score = 10;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j-1)==CPU)&&board.getPlayerVal(slot+2, j-2)==CPU&&board.getPlayerVal(slot-1, j+1)==CPU){
-        move.score = 10;
-        return move;
-    }
-    //diagonal disjoint case 2 x xx
-    else if((board.getPlayerVal(slot-1, j+1)==CPU)&&board.getPlayerVal(slot+1, j-1)==CPU&&board.getPlayerVal(slot+2, j-2)==CPU){
-        move.score = 10;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j+1)==CPU)&&board.getPlayerVal(slot-1, j-1)==CPU&&board.getPlayerVal(slot-2, j-2)==CPU){
-        move.score = 10;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j-1)==CPU)&&board.getPlayerVal(slot+1, j+1)==CPU&&board.getPlayerVal(slot+2, j+2)==CPU){
-        move.score = 10;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j-1)==CPU)&&board.getPlayerVal(slot-1, j+1)==CPU&&board.getPlayerVal(slot-2, j+2)==CPU){
-        move.score = 10;
-        return move;
-    }
-    //
-    //Now the enemy three in a row to block
-    //horizontal
-    else if((board.getPlayerVal(slot+1, j)==HUMAN&&board.getPlayerVal(slot+2, j)==HUMAN&&board.getPlayerVal(slot+3, j)==HUMAN)
-       ||(board.getPlayerVal(slot-1, j)==HUMAN&&board.getPlayerVal(slot-2, j)==HUMAN&&board.getPlayerVal(slot-3, j)==HUMAN)){
-        move.score = 9;
-        return move;
-    }
-    //horizontal disjoint  x xx and xx x
-    else if((board.getPlayerVal(slot-1, j)==HUMAN&&board.getPlayerVal(slot+1, j)==HUMAN&&board.getPlayerVal(slot+2, j)==HUMAN)
-       ||(board.getPlayerVal(slot-1, j)==HUMAN&&board.getPlayerVal(slot-2, j)==HUMAN&&board.getPlayerVal(slot+1, j)==HUMAN)){
-        move.score = 9;
-        return move;
-    }
     
-    //vertical
-    else if((board.getPlayerVal(slot, j+1)==HUMAN&&board.getPlayerVal(slot, j+2)==HUMAN&&board.getPlayerVal(slot, j+3)==HUMAN)){
-        move.score = 9;
-        return move;
-    }
-    //diagonal
-    else if((board.getPlayerVal(slot+1, j-1)==HUMAN&&board.getPlayerVal(slot+2, j-2)==HUMAN&&board.getPlayerVal(slot+3, j-3)==HUMAN)){
-        move.score = 9;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j-1)==HUMAN&&board.getPlayerVal(slot-2, j-2)==HUMAN&&board.getPlayerVal(slot-3, j-3)==HUMAN)){
-        move.score = 9;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j+1)==HUMAN&&board.getPlayerVal(slot+2, j+2)==HUMAN&&board.getPlayerVal(slot+3, j+3)==HUMAN)){
-        move.score = 9;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j+1)==HUMAN&&board.getPlayerVal(slot-2, j+2)==HUMAN&&board.getPlayerVal(slot-3, j+3)==HUMAN)){
-        move.score = 9;
-        return move;
-    }
-    //diagonal disjoint case 1 xx x
-    else if((board.getPlayerVal(slot-1, j+1)==HUMAN)&&board.getPlayerVal(slot-2, j+2)==HUMAN&&board.getPlayerVal(slot+1, j-1)==HUMAN){
-        move.score = 9;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j+1)==HUMAN)&&board.getPlayerVal(slot+2, j+2)==HUMAN&&board.getPlayerVal(slot-1, j-1)==HUMAN){
-        move.score = 9;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j-1)==HUMAN)&&board.getPlayerVal(slot-2, j-2)==HUMAN&&board.getPlayerVal(slot+1, j+1)==HUMAN){
-        move.score = 9;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j-1)==HUMAN)&&board.getPlayerVal(slot+2, j-2)==HUMAN&&board.getPlayerVal(slot-1, j+1)==HUMAN){
-        move.score = 9;
-        return move;
-    }
-    //diagonal disjoint case 2 x xx
-    else if((board.getPlayerVal(slot-1, j+1)==HUMAN)&&board.getPlayerVal(slot+1, j-1)==HUMAN&&board.getPlayerVal(slot+2, j-2)==HUMAN){
-        move.score = 9;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j+1)==HUMAN)&&board.getPlayerVal(slot-1, j-1)==HUMAN&&board.getPlayerVal(slot-2, j-2)==HUMAN){
-        move.score = 9;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j-1)==HUMAN)&&board.getPlayerVal(slot+1, j+1)==HUMAN&&board.getPlayerVal(slot+2, j+2)==HUMAN){
-        move.score = 9;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j-1)==HUMAN)&&board.getPlayerVal(slot-1, j+1)==HUMAN&&board.getPlayerVal(slot-2, j+2)==HUMAN){
-        move.score = 9;
-        return move;
-    }
-    //
-    //two in a row to make three
-    //horizontal
-    else if((board.getPlayerVal(slot+1, j)==CPU&&board.getPlayerVal(slot+2, j)==CPU
-        )||(board.getPlayerVal(slot-1, j)==CPU&&board.getPlayerVal(slot-2, j)==CPU)){
-        move.score = 8;
-        return move;
-    }
-    //horizontal disjoint x x
-    else if(board.getPlayerVal(slot-1, j)==CPU&&board.getPlayerVal(slot+1, j)){
-        move.score = 8;
-        return move;
-    }
-    //vertical
-    else if(board.getPlayerVal(slot,j+1) == CPU&&board.getPlayerVal(slot,j+2)==CPU){
-        move.score = 8;
-        return move;
-    }
-    //diagonal
-    else if((board.getPlayerVal(slot+1, j-1)==CPU&&board.getPlayerVal(slot+2, j-2)==CPU)){
-        move.score = 8;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j-1)==CPU&&board.getPlayerVal(slot-2, j-2)==CPU)){
-        move.score = 8;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j+1)==CPU&&board.getPlayerVal(slot+2, j+2)==CPU)){
-        move.score = 8;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j+1)==CPU&&board.getPlayerVal(slot-2, j+2)==CPU)){
-        move.score = 8;
-        return move;
-    }
-    //diagonal disjoint
-    else if((board.getPlayerVal(slot+1, j-1)==CPU&&board.getPlayerVal(slot-1, j+1)==CPU)){
-        move.score = 8;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j+1)==CPU&&board.getPlayerVal(slot-1, j-1)==CPU)){
-        move.score = 8;
-        return move;
-    }
-    
-    //
-    //enemy two in a row to block enemy three
-    //horizontal
-    else if((board.getPlayerVal(slot+1, j)==HUMAN&&board.getPlayerVal(slot+2, j)==HUMAN
-        )||(board.getPlayerVal(slot-1, j)==HUMAN&&board.getPlayerVal(slot-2, j)==HUMAN)){
-        move.score = 7;
-        return move;
-    }
-    //horizontal disjoint x x
-    else if(board.getPlayerVal(slot-1, j)==HUMAN&&board.getPlayerVal(slot+1, j)==HUMAN){
-        move.score = 7;
-        return move;
-    }
-    //vertical
-    else if(board.getPlayerVal(slot,j+1) == HUMAN&&board.getPlayerVal(slot,j+2)==HUMAN){
-        move.score = 7;
-        return move;
-    }
-    //diagonal
-    else if((board.getPlayerVal(slot+1, j-1)==HUMAN&&board.getPlayerVal(slot+2, j-2)==HUMAN)){
-        move.score = 7;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j-1)==HUMAN&&board.getPlayerVal(slot-2, j-2)==HUMAN)){
-        move.score = 7;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j+1)==HUMAN&&board.getPlayerVal(slot+2, j+2)==HUMAN)){
-        move.score = 7;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j+1)==HUMAN&&board.getPlayerVal(slot-2, j+2)==HUMAN)){
-        move.score = 7;
-        return move;
-    }
-    //diagonal disjoint
-    else if((board.getPlayerVal(slot+1, j-1)==HUMAN&&board.getPlayerVal(slot-1, j+1)==HUMAN)){
-        move.score = 7;
-        return move;
-    }
-    else if((board.getPlayerVal(slot+1, j+1)==HUMAN&&board.getPlayerVal(slot-1, j-1)==HUMAN)){
-        move.score=7;
-        return move;
-    }
-    
-    //
-    //one to make two
-    //horizontal
-    else if((board.getPlayerVal(slot+1, j)==CPU)||(board.getPlayerVal(slot-1, j)==CPU)){
-        move.score = 6;
-        return move;
-    }
-    //vertical
-    else if((board.getPlayerVal(slot, j+1)==CPU)){
-        move.score = 6;
-        return move;
-    }
-    //diagonal
-    else if((board.getPlayerVal(slot-1, j+1)==CPU)||(board.getPlayerVal(slot+1,j+1)==CPU)){
-        move.score = 6;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j-1)==CPU)||(board.getPlayerVal(slot+1,j-1)==CPU)){
-        move.score = 6;
-        return move;
-    }
-    //enemy one to block enemy two
-    //horizontal
-    else if((board.getPlayerVal(slot+1, j)==HUMAN)||(board.getPlayerVal(slot-1, j)==HUMAN)){
-        move.score = 5;
-        return move;
-    }
-    //vertical
-    else if((board.getPlayerVal(slot, j+1)==HUMAN)){
-        move.score = 5;
-        return move;
-    }
-    //diagonal
-    else if((board.getPlayerVal(slot-1, j+1)==HUMAN)||(board.getPlayerVal(slot+1,j+1)==HUMAN)){
-        move.score = 5;
-        return move;
-    }
-    else if((board.getPlayerVal(slot-1, j-1)==HUMAN)||(board.getPlayerVal(slot+1,j-1)==HUMAN)){
-        move.score = 5;
-        return move;
-    }
-    return move;
-}
+//    int score = 0;
+//    //horizontal
+//    for (int j = 5; j >= 0; j--) {
+//        int count = 0;
+//        int spaces = 0;
+//        for (int i = 0; i<7; i++) {
+//            for (int p=0; p<4; p++){
+//                if (board.getPlayerVal(i+p, j) == X_VAL)
+//                    count++;
+//                if (board.getPlayerVal(i+p, j) == NO_VAL)
+//                    spaces++;
+//                if (spaces>1)
+//                    break;
+//                if (board.getPlayerVal(i+p, j)==O_VAL)
+//                    break;
+//                }
+//        }
+//        score += 5*count;
+//    }
+//    //vertical
+//    for (int i = 0; i<7; i++) {
+//        int count=0;
+//        for (int j = 5; j >= 0; j--) {
+//            for(int p=0; p<4; p++){
+//                if (board.getPlayerVal(i, j+p)==X_VAL)
+//                    count++;
+//                else
+//                    break;
+//            }
+//        }
+//        score += 5*count;
+//    }
+//    //diagonal
+//    for (int j = 0; j<6; j++){
+//        int count = 0;
+//        int spaces = 0;
+//        for (int i = 0; i<7; i++) {
+//            for (int p=0; p<4; p++){
+//                if(board.getPlayerVal(i+p, j-p)==X_VAL)
+//                   count++;
+//                if(board.getPlayerVal(i+p, j-p))
+//                    spaces++;
+//                if(spaces>1)
+//                    break;
+//            }
+//        }
+//    score += 5* count;
+//    }
+//    for (int j = 0; j<6; j++){
+//        int count = 0;
+//        int spaces = 0;
+//        for (int i = 0; i<7; i++) {
+//            for (int p=0; p<4; p++){
+//                if(board.getPlayerVal(i-p, j-p)==X_VAL)
+//                    count++;
+//                if(board.getPlayerVal(i-p, j-p))
+//                    spaces++;
+//                if(spaces>1)
+//                    break;
+//            }
+//        }
+//        score += 5* count;
+//    }
+//    
+//    //Enemy
+//    //horizontal
+//    for (int j = 5; j >= 0; j--) {
+//        int count = 0;
+//        int spaces = 0;
+//        for (int i = 0; i<7; i++) {
+//            for (int p=0; p<4; p++){
+//                if (board.getPlayerVal(i+p, j) == O_VAL)
+//                    count++;
+//                if (board.getPlayerVal(i+p, j) == NO_VAL)
+//                    spaces++;
+//                if (spaces>1)
+//                    break;
+//                if (board.getPlayerVal(i+p, j)==X_VAL)
+//                    break;
+//                }
+//            }
+//            score -= 5*count;
+//        }
+//        //vertical
+//        for (int i = 0; i<7; i++) {
+//            int count=0;
+//            for (int j = 5; j >= 0; j--) {
+//                for(int p=0; p<4; p++){
+//                    if (board.getPlayerVal(i, j+p)==O_VAL)
+//                        count++;
+//                    else
+//                        break;
+//                }
+//            }
+//            score -= 5*count;
+//        }
+//        //diagonal
+//        for (int j = 0; j<6; j++){
+//            int count = 0;
+//            int spaces = 0;
+//            for (int i = 0; i<7; i++) {
+//                for (int p=0; p<4; p++){
+//                    if(board.getPlayerVal(i+p, j-p)==O_VAL)
+//                        count++;
+//                    if(board.getPlayerVal(i+p, j-p)==NO_VAL)
+//                        spaces++;
+//                    if(spaces>1)
+//                        break;
+//                    if(board.getPlayerVal(i+p, j-p)==X_VAL)
+//                        break;
+//                }
+//            }
+//            score -= 5* count;
+//        }
+//        for (int j = 0; j<6; j++){
+//            int count = 0;
+//            int spaces = 0;
+//            for (int i = 0; i<7; i++) {
+//                for (int p=0; p<4; p++){
+//                    if(board.getPlayerVal(i-p, j-p)==O_VAL)
+//                        count++;
+//                    if(board.getPlayerVal(i-p, j-p))
+//                        spaces++;
+//                    if(spaces>1)
+//                        break;
+//                    if(board.getPlayerVal(i-p, j-p)==X_VAL)
+//                        break;
+//                }
+//            }
+//            score -= 5* count;
+//        }
+//
+//    return score;
+//}

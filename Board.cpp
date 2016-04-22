@@ -26,22 +26,21 @@ void Board::clear() {
 }
 //Print the board
 void Board::print() const {
-    std::cout <<"---------------" << std::endl;
 	for (int j = 0; j<6; j++) {
-        std::cout << "|";
+
 		for (int i = 0; i<7; i++) {
+                std::cout << "(";
             if (getPlayerVal(i, j)==NO_VAL)
-                std::cout << " " << "|";
+                std::cout << " " << ")";
             else if(getPlayerVal(i, j)==X_VAL){
-                std::cout << "X" << "|";
+                std::cout << "X" << ")";
             } else {
-                std::cout << "O" << "|";
+                std::cout << "O" << ")";
             }
 		}
 		std::cout << std::endl;
-        std::cout <<"---------------" << std::endl;
 	}
-	std::cout << " 1 2 3 4 5 6 7" << std::endl;
+	std::cout << " 1  2  3  4  5  6  7" << std::endl;
 }
 //Is the game over?
 int Board::checkVictory() const {
@@ -173,3 +172,243 @@ bool Board::slotFull(int slot) const {
 	return(board[0][slot] != NO_VAL||board[0][slot]==O_VAL||board[0][slot]==X_VAL);
 }
 
+int Board::scoreMove(){
+    int whoWon = 0;
+    // Horizontal one moves Player 1
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 1 && board[row][col + 1] == 0 && board[row][col + 2] == 0 && board[row][col + 3] == 0) {
+                whoWon = whoWon - 125;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 1 && board[row][col + 2] == 0 && board[row][col + 3] == 0) {
+                whoWon = whoWon - 125;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 0 && board[row][col + 2] == 1 && board[row][col + 3] == 0) {
+                whoWon = whoWon - 125;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 0 && board[row][col + 2] == 0 && board[row][col + 3] == 1) {
+                whoWon = whoWon - 125;
+            }
+        }
+    }
+    //Horizontal One Moves End Player One
+    
+    // Horizontal one moves Player Two
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 2 && board[row][col + 1] == 0 && board[row][col + 2] == 0 && board[row][col + 3] == 0) {
+                whoWon = whoWon + 125;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 2 && board[row][col + 2] == 0 && board[row][col + 3] == 0) {
+                whoWon = whoWon + 125;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 0 && board[row][col + 2] == 2 && board[row][col + 3] == 0) {
+                whoWon = whoWon + 125;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 0 && board[row][col + 2] == 0 && board[row][col + 3] == 2) {
+                whoWon = whoWon + 125;
+            }
+        }
+    }
+    //Horizontal One Moves End Player Two
+    
+    //Horizontal Two Moves Player One
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 1 && board[row][col + 1] == 1 && board[row][col + 2] == 0 && board[row][col + 3] == 0) {
+                whoWon = whoWon - 250;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 1 && board[row][col + 2] == 1 && board[row][col + 3] == 0) {
+                whoWon = whoWon - 250;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 0 && board[row][col + 2] == 1 && board[row][col + 3] == 1) {
+                whoWon = whoWon - 250;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 1 && board[row][col + 1] == 0 && board[row][col + 2] == 1 && board[row][col + 3] == 0) {
+                whoWon = whoWon - 250;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 1 && board[row][col + 2] == 0 && board[row][col + 3] == 1) {
+                whoWon = whoWon - 250;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 1 && board[row][col + 1] == 0 && board[row][col + 2] == 0 && board[row][col + 3] == 1) {
+                whoWon = whoWon - 250;
+            }
+        }
+    }
+    
+    //Horizontal Two Moves Player One End
+    
+    //Horizontal Two Moves Player Two
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 1 && board[row][col + 1] == 1 && board[row][col + 2] == 0 && board[row][col + 3] == 0) {
+                whoWon = whoWon - 250;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 2 && board[row][col + 2] == 2 && board[row][col + 3] == 0) {
+                whoWon = whoWon + 250;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 0 && board[row][col + 2] == 2 && board[row][col + 3] == 2) {
+                whoWon = whoWon + 250;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 2 && board[row][col + 1] == 0 && board[row][col + 2] == 2 && board[row][col + 3] == 0) {
+                whoWon = whoWon + 250;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 0 && board[row][col + 1] == 2 && board[row][col + 2] == 0 && board[row][col + 3] == 2) {
+                whoWon = whoWon + 250;
+            }
+        }
+    }
+    
+    for(int col = 0;col <= 3;col++) {
+        for(int row = 0;row < 6;row++) {
+            if(board[row][col] == 2 && board[row][col + 1] == 0 && board[row][col + 2] == 0 && board[row][col + 3] == 2) {
+                whoWon = whoWon + 250;
+            }
+        }
+    }
+    //Horizontal Two Moves Player Two End
+        //Horizontal Three Moves Player One
+        
+        for(int col = 0;col <= 3;col++) {
+            for(int row = 0;row < 6;row++) {
+                if(board[row][col] == 1 && board[row][col + 1] == 1 && board[row][col + 2] == 1 && board[row][col + 3] == 0) {
+                    whoWon = whoWon - 1000;
+                }
+            }
+        }
+        
+        for(int col = 0;col <= 3;col++) {
+            for(int row = 0;row < 6;row++) {
+                if(board[row][col] == 0 && board[row][col + 1] == 1 && board[row][col + 2] == 1 && board[row][col + 3] == 1) {
+                    whoWon = whoWon - 1000;
+                }
+            }
+        }
+        
+        for(int col = 0;col <= 3;col++) {
+            for(int row = 0;row < 6;row++) {
+                if(board[row][col] == 1 && board[row][col + 1] == 0 && board[row][col + 2] == 1 && board[row][col + 3] == 1) {
+                    whoWon = whoWon - 1000;
+                }
+            }
+        }
+        
+        for(int col = 0;col <= 3;col++) {
+            for(int row = 0;row < 6;row++) {
+                if(board[row][col] == 1 && board[row][col + 1] == 1 && board[row][col + 2] == 0 && board[row][col + 3] == 1) {
+                    whoWon = whoWon - 1000;
+                }
+            }
+        }
+        //Horizontal Three Moves Player One End
+        
+        //Horizontal Three Moves Player Two
+        
+        for(int col = 0;col <= 3;col++) {
+            for(int row = 0;row < 6;row++) {
+                if(board[row][col] == 2 && board[row][col + 1] == 2 && board[row][col + 2] == 2 && board[row][col + 3] == 0) {
+                    whoWon = whoWon + 1000;
+                }
+            }
+        }
+        
+        for(int col = 0;col <= 3;col++) {
+            for(int row = 0;row < 6;row++) {
+                if(board[row][col] == 0 && board[row][col + 1] == 2 && board[row][col + 2] == 2 && board[row][col + 3] == 2) {
+                    whoWon = whoWon + 1000;
+                }
+            }
+        }
+        
+        for(int col = 0;col <= 3;col++) {
+            for(int row = 0;row < 6;row++) {
+                if(board[row][col] == 2 && board[row][col + 1] == 0 && board[row][col + 2] == 2 && board[row][col + 3] == 2) {
+                    whoWon = whoWon + 1000;
+                }
+            }
+        }
+        
+        for(int col = 0;col <= 3;col++) {
+            for(int row = 0;row < 6;row++) {
+                if(board[row][col] == 2 && board[row][col + 1] == 2 && board[row][col + 2] == 0 && board[row][col + 3] == 2) {
+                    whoWon = whoWon + 1000;
+                }
+            }
+        }
+    return whoWon;
+}

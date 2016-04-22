@@ -28,8 +28,7 @@ public:
     
 private:
     //main game tree function (alpha-beta minimax)
-    AIMove alphaBeta(Board board, int depth, int player, int alpha, int beta);
-    AIMove scoreMove(Board &board, int slot);
+    AIMove alphaBeta(Board board, int depth, int player, AIMove alpha, AIMove beta);
     int CPU;
     int HUMAN;
 };
