@@ -27,28 +27,28 @@ void AI::performMove(Board &board){
 //Uses minimax algorithm as well but prunes when beta becomes less than alpha
 //At which point it decides that move is no good
 AIMove AI::alphaBeta(Board board, int depth, int player, AIMove alpha, AIMove beta){
-    AIMove move;
+    AIMove move = *new AIMove();
     if (player == CPU){
-        move.score = -99999999;
+        move.score = INT_MIN;
         for(int i = 0; i<7; i++){
             if(!board.slotFull(i)){
                 move.slot = i;
                 board.dropInSlot(i, CPU); //place marker on imaginary game board
-                board.dropInSlot(i, CPU);
                 int base = board.checkVictory();
                 if (base == CPU){
-                    move.score = 99999999;
+                    move.score = INT_MAX;
                     return move;
                 }
                 else if (base == HUMAN){
-                    move.score = -99999999;
+                    move.score = INT_MIN;
                     return move;
                 }
                 else if (base == TIE){
                     move.score = 0;
                     return move;
-                }else if(depth == 10){
-                    return board.scoreMove();
+                }else if(depth == 8){
+                    move.score= board.scoreMove();
+                    return move;
                 }
                 AIMove tmp = alphaBeta(board, depth+1, CPU, alpha, beta);
                 if (tmp.score > alpha.score){
@@ -63,19 +63,18 @@ AIMove AI::alphaBeta(Board board, int depth, int player, AIMove alpha, AIMove be
         }
         return alpha;
     } else {
-        move.score = 99999999;
+        move.score = INT_MAX;
         for(int i=0; i<7; i++){
             if(!board.slotFull(i)){
                 move.slot = i;
                 board.dropInSlot(i, HUMAN);
-                board.dropInSlot(i, HUMAN);
                 int base = board.checkVictory();
                 if (base == CPU){
-                    move.score = 99999999;
+                    move.score = INT_MAX;
                     return move;
                 }
                 else if (base == HUMAN){
-                    move.score = -99999999;
+                    move.score = INT_MIN;
                     return move;
                 }
                 else if (base == TIE){
@@ -95,140 +94,3 @@ AIMove AI::alphaBeta(Board board, int depth, int player, AIMove alpha, AIMove be
     }
 }
 
-//When the computer reaches the depth score the move and return move
-    
-    
-//    int score = 0;
-//    //horizontal
-//    for (int j = 5; j >= 0; j--) {
-//        int count = 0;
-//        int spaces = 0;
-//        for (int i = 0; i<7; i++) {
-//            for (int p=0; p<4; p++){
-//                if (board.getPlayerVal(i+p, j) == X_VAL)
-//                    count++;
-//                if (board.getPlayerVal(i+p, j) == NO_VAL)
-//                    spaces++;
-//                if (spaces>1)
-//                    break;
-//                if (board.getPlayerVal(i+p, j)==O_VAL)
-//                    break;
-//                }
-//        }
-//        score += 5*count;
-//    }
-//    //vertical
-//    for (int i = 0; i<7; i++) {
-//        int count=0;
-//        for (int j = 5; j >= 0; j--) {
-//            for(int p=0; p<4; p++){
-//                if (board.getPlayerVal(i, j+p)==X_VAL)
-//                    count++;
-//                else
-//                    break;
-//            }
-//        }
-//        score += 5*count;
-//    }
-//    //diagonal
-//    for (int j = 0; j<6; j++){
-//        int count = 0;
-//        int spaces = 0;
-//        for (int i = 0; i<7; i++) {
-//            for (int p=0; p<4; p++){
-//                if(board.getPlayerVal(i+p, j-p)==X_VAL)
-//                   count++;
-//                if(board.getPlayerVal(i+p, j-p))
-//                    spaces++;
-//                if(spaces>1)
-//                    break;
-//            }
-//        }
-//    score += 5* count;
-//    }
-//    for (int j = 0; j<6; j++){
-//        int count = 0;
-//        int spaces = 0;
-//        for (int i = 0; i<7; i++) {
-//            for (int p=0; p<4; p++){
-//                if(board.getPlayerVal(i-p, j-p)==X_VAL)
-//                    count++;
-//                if(board.getPlayerVal(i-p, j-p))
-//                    spaces++;
-//                if(spaces>1)
-//                    break;
-//            }
-//        }
-//        score += 5* count;
-//    }
-//    
-//    //Enemy
-//    //horizontal
-//    for (int j = 5; j >= 0; j--) {
-//        int count = 0;
-//        int spaces = 0;
-//        for (int i = 0; i<7; i++) {
-//            for (int p=0; p<4; p++){
-//                if (board.getPlayerVal(i+p, j) == O_VAL)
-//                    count++;
-//                if (board.getPlayerVal(i+p, j) == NO_VAL)
-//                    spaces++;
-//                if (spaces>1)
-//                    break;
-//                if (board.getPlayerVal(i+p, j)==X_VAL)
-//                    break;
-//                }
-//            }
-//            score -= 5*count;
-//        }
-//        //vertical
-//        for (int i = 0; i<7; i++) {
-//            int count=0;
-//            for (int j = 5; j >= 0; j--) {
-//                for(int p=0; p<4; p++){
-//                    if (board.getPlayerVal(i, j+p)==O_VAL)
-//                        count++;
-//                    else
-//                        break;
-//                }
-//            }
-//            score -= 5*count;
-//        }
-//        //diagonal
-//        for (int j = 0; j<6; j++){
-//            int count = 0;
-//            int spaces = 0;
-//            for (int i = 0; i<7; i++) {
-//                for (int p=0; p<4; p++){
-//                    if(board.getPlayerVal(i+p, j-p)==O_VAL)
-//                        count++;
-//                    if(board.getPlayerVal(i+p, j-p)==NO_VAL)
-//                        spaces++;
-//                    if(spaces>1)
-//                        break;
-//                    if(board.getPlayerVal(i+p, j-p)==X_VAL)
-//                        break;
-//                }
-//            }
-//            score -= 5* count;
-//        }
-//        for (int j = 0; j<6; j++){
-//            int count = 0;
-//            int spaces = 0;
-//            for (int i = 0; i<7; i++) {
-//                for (int p=0; p<4; p++){
-//                    if(board.getPlayerVal(i-p, j-p)==O_VAL)
-//                        count++;
-//                    if(board.getPlayerVal(i-p, j-p))
-//                        spaces++;
-//                    if(spaces>1)
-//                        break;
-//                    if(board.getPlayerVal(i-p, j-p)==X_VAL)
-//                        break;
-//                }
-//            }
-//            score -= 5* count;
-//        }
-//
-//    return score;
-//}
