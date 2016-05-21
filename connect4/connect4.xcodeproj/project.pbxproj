@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		82908EB21CBF2F6B0033897F /* AI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 82908EAA1CBF2F6B0033897F /* AI.cpp */; };
-		82908EB31CBF2F6B0033897F /* Board.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 82908EAC1CBF2F6B0033897F /* Board.cpp */; };
-		82908EB41CBF2F6B0033897F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 82908EAE1CBF2F6B0033897F /* main.cpp */; };
-		82908EB51CBF2F6B0033897F /* MainGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 82908EAF1CBF2F6B0033897F /* MainGame.cpp */; };
+		82E26FF41CD0065C0066FC18 /* AI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 82E26FEC1CD0065C0066FC18 /* AI.cpp */; };
+		82E26FF51CD0065C0066FC18 /* Board.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 82E26FEE1CD0065C0066FC18 /* Board.cpp */; };
+		82E26FF61CD0065C0066FC18 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 82E26FF01CD0065C0066FC18 /* main.cpp */; };
+		82E26FF71CD0065C0066FC18 /* MainGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 82E26FF11CD0065C0066FC18 /* MainGame.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,14 +27,14 @@
 
 /* Begin PBXFileReference section */
 		82908EA01CBF2F270033897F /* connect4 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = connect4; sourceTree = BUILT_PRODUCTS_DIR; };
-		82908EAA1CBF2F6B0033897F /* AI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AI.cpp; path = ../../AI.cpp; sourceTree = "<group>"; };
-		82908EAB1CBF2F6B0033897F /* AI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AI.h; path = ../../AI.h; sourceTree = "<group>"; };
-		82908EAC1CBF2F6B0033897F /* Board.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Board.cpp; path = ../../Board.cpp; sourceTree = "<group>"; };
-		82908EAD1CBF2F6B0033897F /* Board.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Board.h; path = ../../Board.h; sourceTree = "<group>"; };
-		82908EAE1CBF2F6B0033897F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../main.cpp; sourceTree = "<group>"; };
-		82908EAF1CBF2F6B0033897F /* MainGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MainGame.cpp; path = ../../MainGame.cpp; sourceTree = "<group>"; };
-		82908EB01CBF2F6B0033897F /* MainGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainGame.h; path = ../../MainGame.h; sourceTree = "<group>"; };
-		82908EB11CBF2F6B0033897F /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../README; sourceTree = "<group>"; };
+		82E26FEC1CD0065C0066FC18 /* AI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AI.cpp; path = ../AI.cpp; sourceTree = "<group>"; };
+		82E26FED1CD0065C0066FC18 /* AI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AI.h; path = ../AI.h; sourceTree = "<group>"; };
+		82E26FEE1CD0065C0066FC18 /* Board.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Board.cpp; path = ../Board.cpp; sourceTree = "<group>"; };
+		82E26FEF1CD0065C0066FC18 /* Board.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Board.h; path = ../Board.h; sourceTree = "<group>"; };
+		82E26FF01CD0065C0066FC18 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../main.cpp; sourceTree = "<group>"; };
+		82E26FF11CD0065C0066FC18 /* MainGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MainGame.cpp; path = ../MainGame.cpp; sourceTree = "<group>"; };
+		82E26FF21CD0065C0066FC18 /* MainGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainGame.h; path = ../MainGame.h; sourceTree = "<group>"; };
+		82E26FF31CD0065C0066FC18 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../README; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +51,14 @@
 		82908E971CBF2F270033897F = {
 			isa = PBXGroup;
 			children = (
+				82E26FEC1CD0065C0066FC18 /* AI.cpp */,
+				82E26FED1CD0065C0066FC18 /* AI.h */,
+				82E26FEE1CD0065C0066FC18 /* Board.cpp */,
+				82E26FEF1CD0065C0066FC18 /* Board.h */,
+				82E26FF01CD0065C0066FC18 /* main.cpp */,
+				82E26FF11CD0065C0066FC18 /* MainGame.cpp */,
+				82E26FF21CD0065C0066FC18 /* MainGame.h */,
+				82E26FF31CD0065C0066FC18 /* README */,
 				82908EA21CBF2F270033897F /* connect4 */,
 				82908EA11CBF2F270033897F /* Products */,
 			);
@@ -67,14 +75,6 @@
 		82908EA21CBF2F270033897F /* connect4 */ = {
 			isa = PBXGroup;
 			children = (
-				82908EAA1CBF2F6B0033897F /* AI.cpp */,
-				82908EAB1CBF2F6B0033897F /* AI.h */,
-				82908EAC1CBF2F6B0033897F /* Board.cpp */,
-				82908EAD1CBF2F6B0033897F /* Board.h */,
-				82908EAE1CBF2F6B0033897F /* main.cpp */,
-				82908EAF1CBF2F6B0033897F /* MainGame.cpp */,
-				82908EB01CBF2F6B0033897F /* MainGame.h */,
-				82908EB11CBF2F6B0033897F /* README */,
 			);
 			path = connect4;
 			sourceTree = "<group>";
@@ -105,6 +105,9 @@
 		82908E981CBF2F270033897F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				KnownAssetTags = (
+					New,
+				);
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Tyler Small";
 				TargetAttributes = {
@@ -135,10 +138,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				82908EB31CBF2F6B0033897F /* Board.cpp in Sources */,
-				82908EB51CBF2F6B0033897F /* MainGame.cpp in Sources */,
-				82908EB41CBF2F6B0033897F /* main.cpp in Sources */,
-				82908EB21CBF2F6B0033897F /* AI.cpp in Sources */,
+				82E26FF71CD0065C0066FC18 /* MainGame.cpp in Sources */,
+				82E26FF51CD0065C0066FC18 /* Board.cpp in Sources */,
+				82E26FF41CD0065C0066FC18 /* AI.cpp in Sources */,
+				82E26FF61CD0065C0066FC18 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,6 +260,7 @@
 				82908EA91CBF2F270033897F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

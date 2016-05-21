@@ -14,8 +14,7 @@
 #include "AI.h"
 #include "Board.h"
 
-enum class GameState { PLAYING, EXIT };
-
+enum class State { PLAYING, EXIT };
 class MainGame {
 public:
     // Runs the main loop
@@ -36,7 +35,7 @@ private:
     // Member Variables
     Board connect4; ///< The connect 4 board
     int currentPlayer; ///< The index of the current player
-    GameState gameState; ///< The state of the game
+    State gameState; ///< The state of the game
     AI ai; ///< The AI player
 };
 
