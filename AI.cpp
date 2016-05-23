@@ -186,11 +186,12 @@ GameTreeNode* AI::newGameTreeNode(Board* gs, int player, int other, int turn, in
     return toR;
 }
 
-int AI::heuristicForState(Board* board, int player, int other) {
+int AI::heuristicForBoard(Board* board, int player, int other) {
     if (board->checkVictory()==TIE)
         return 0;
     
-    int term_stat = board->checkVictory();
+    int term_stat = board
+    ->checkVictory();
     if (term_stat == player)
         return 1000;
     
@@ -210,22 +211,21 @@ GameTreeNode* g_node = NULL;
 
 int AI::ascComp(const void* a, const void* b) {
     GameTreeNode* node = g_node;
-    return heuristicForState(*(Board**) a, node->player, node->other_player) -
-    heuristicForState(*(Board**) b, node->player, node->other_player);
+    return heuristicForBoard(*(Board**) a, node->player, node->other_player) -heuristicForBoard(*(Board**) b, node->player, node->other_player);
     
 }
 
 int AI::desComp(const void* a, const void* b) {
     GameTreeNode* node = g_node;
-    return heuristicForState(*(Board**) b, node->player, node->other_player) -
-    heuristicForState(*(Board**) a, node->player, node->other_player);
+    return heuristicForBoard(*(Board**) b, node->player, node->other_player) -
+    heuristicForBoard(*(Board**) a, node->player, node->other_player);
     
 }
 
 int AI::getWeight(GameTreeNode* node, int movesLeft) {
     int toR, move, best_weight;
     if (node->board->checkVictory()!=NO_VAL || movesLeft == 0)
-        return heuristicForState(node->board, node->player, node->other_player);
+        return heuristicForBoard(node->board, node->player, node->other_player);
     
     Board** possibleMoves = (Board**) malloc(sizeof(Board*) * 7);
     int validMoves = 0;
@@ -326,7 +326,7 @@ int AI::getBestMove(GameTreeNode* node, int movesLeft) {
 
 
 
-int AI::bestMoveForState(Board* gs, int player, int other_player, int look_ahead) {
+int AI::bestMove(Board* gs, int player, int other_player, int look_ahead) {
     TranspositionTable* t1 = newTable();
     GameTreeNode* n = newGameTreeNode(gs, player, other_player, 1, INT_MIN, INT_MAX, t1);
     int move = getBestMove(n, look_ahead);
@@ -336,7 +336,7 @@ int AI::bestMoveForState(Board* gs, int player, int other_player, int look_ahead
 }
 
 int AI::computerMove(int look_ahead, Board board) {
-    return bestMoveForState(&board, CPU, HUMAN, look_ahead);
+    return bestMove(&board, CPU, HUMAN, look_ahead);
 }
 
 void AI::freeGameState(Board* board) {
