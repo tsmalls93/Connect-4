@@ -53,8 +53,7 @@ public:
     AI();
     //Perform move given by alphaBeta
     void performMove(Board &board);
-    Board* newGameState();
-    int static countAt(Board board, int x, int y, int player);
+    int static countAt(Board* board, int x, int y, int player);
     int static getIncrementForArray(int* arr, int player);
     int static getHeuristic(Board board, int player, int other_player);
     int canMove(Board board, int column);

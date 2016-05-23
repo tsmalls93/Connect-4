@@ -28,7 +28,7 @@ public:
     int weight;
     int refs;
     // Initializes the board
-    void init();
+    Board* init();
     // Clears the board
     void clear();
     // Prints the board to standard output
@@ -54,8 +54,7 @@ public:
         }
         return -1;
     }
-    ~Board();
-    std::vector<std::vector<int> > board;
+    int* board;
 private:
     
 };

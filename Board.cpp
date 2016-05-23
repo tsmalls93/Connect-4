@@ -8,25 +8,22 @@
 
 #include "Board.h"
 
-Board::~Board(){
-    board.erase(board.begin(), board.end());
-}
 //Set size of board
-void Board::init() {
-	board.resize(6);
-	for (int i = 0; i<6; i++) {
-		board[i].resize(7);
-	}
-	clear();
+Board* Board::init() {
+    Board *toR = (Board*)malloc(sizeof(Board));
+    toR->board = (int*) malloc(sizeof(int*) * 7 * 6);
+    toR->weight = 0;
+    toR->refs = 1;
+    toR->last_move = 0;
+	toR->clear();
+    return toR;
 }
 //Clear the board
 void Board::clear() {
-	for (int j = 0; j<6; j++) {
-		for (int i = 0; i<7; i++) {
+		for (int i = 0; i<7*6; i++) {
 			//notice j and i order (y and x respectively)
-			board[j][i] = NO_VAL;
+			board[i] = NO_VAL;
 		}
-	}
 }
 //Print the board
 void Board::print() const {
@@ -149,7 +146,7 @@ void Board::dropInSlot(int slot, int player) {
 		//loop through the rows of the slot
 		for (int i = 5; i >= 0; i--) {
 			if (getPlayerVal(slot, i) == NO_VAL) {
-				board[i][slot] = X_VAL;
+				board[slot *6 +i] = X_VAL;
 				break;
 			}
 		}
@@ -157,7 +154,7 @@ void Board::dropInSlot(int slot, int player) {
 	else {
 		for (int i = 5; i >= 0; i--) {
 			if (getPlayerVal(slot, i) == NO_VAL) {
-				board[i][slot] = O_VAL;
+				board[slot*6+i] = O_VAL;
 				break;
 			}
 		}
@@ -170,9 +167,15 @@ int Board::getPlayerVal(int x, int y) const {
 		return -1;
 	}
 	else
-		return board[y][x];
+		return this->board[x * 6 + y];
 }
 //Is the slot full?
 bool Board::slotFull(int slot) const {
-	return(board[0][slot] != NO_VAL||board[0][slot]==O_VAL||board[0][slot]==X_VAL);
+    int y;
+    for (y = 0; y < 6; y++) {
+        if (getPlayerVal(slot, y) == NO_VAL)
+            return 0;
+    }
+    
+    return 1;
 }

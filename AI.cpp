@@ -14,22 +14,6 @@ AI::AI(){
     CPU = O_VAL;
 }
 
-Board* AI::newGameState() {
-    Board* toR = (Board*) malloc(sizeof(Board));
-    
-    if (toR == NULL)
-        return NULL;
-    
-    toR->weight = 0;
-    toR->refs = 1;
-    toR->last_move = 0;
-    toR->board = *new vector<vector<int>>;
-    toR->board.clear();
-    
-    return toR;
-}
-
-
 int AI::getIncrementForArray(int* arr, int player) {
     int toR = 0;
     int i;
@@ -47,7 +31,7 @@ int AI::getIncrementForArray(int* arr, int player) {
     return toR;
 }
 
-int AI::countAt(Board board, int x, int y, int player) {
+int AI::countAt(Board* board, int x, int y, int player) {
     
     // check across
     int found = 0;
@@ -55,26 +39,26 @@ int AI::countAt(Board board, int x, int y, int player) {
     int i;
     
     for (i = 0; i < 4; i++) {
-        buf[i] = board.getPlayerVal(x+i, y);
+        buf[i] = board->getPlayerVal(x+i, y);
     }
     
     found += getIncrementForArray(buf, player);
     
     // check down
     for (i = 0; i < 4; i++) {
-        buf[i] = board.getPlayerVal(x, y+i);
+        buf[i] = board->getPlayerVal(x, y+i);
     }
     found += getIncrementForArray(buf, player);
     
     // check diag +/+
     for (i = 0; i < 4; i++) {
-        buf[i] = board.getPlayerVal(x+i, y+i);
+        buf[i] = board->getPlayerVal(x+i, y+i);
     }
     found += getIncrementForArray(buf, player);
     
     // check diag -/+
     for (i = 0; i < 4; i++) {
-        buf[i] = board.getPlayerVal(x-i, y+i);
+        buf[i] = board->getPlayerVal(x-i, y+i);
     }
     found += getIncrementForArray(buf, player);
     
@@ -86,8 +70,8 @@ int AI::getHeuristic(Board board, int player, int other_player) {
     int x, y;
     for (x = 0; x < 7; x++) {
         for (y = 0; y < 6; y++) {
-            toR += countAt(board, x, y, player);
-            toR -= countAt(board, x, y, other_player);
+            toR += countAt(&board, x, y, player);
+            toR -= countAt(&board, x, y, other_player);
         }
     }
     
@@ -109,8 +93,7 @@ Board* AI::stateForMove(Board* board, int column, int player) {
         return NULL;
     Board* toR = new Board();
     toR->init();
-    toR->clear();
-    memcpy(&toR->board, &board->board, sizeof(vector<vector<int> >));
+    memcpy(&toR->board, &board->board, sizeof(int*)*7*6);
     toR->dropInSlot(column, player);
     return toR;
 }
@@ -172,9 +155,8 @@ Board* AI::lookupInTable(TranspositionTable* t, Board *k) {
 
 void AI::addToTable(TranspositionTable* t, Board* k) {
     int hv = hashGameState(*k) % TABLE_SIZE;
-    int i;
     Board** bin = t->bins[hv];
-    for (i = 0; i < TABLE_BIN_SIZE; i++) {
+    for (int i = 0; i < TABLE_BIN_SIZE; i++) {
         if (bin[i] == NULL) {
             bin[i] = k;
             retainGameState(k);
@@ -220,7 +202,7 @@ int AI::heuristicForState(Board* board, int player, int other) {
     if (term_stat == player)
         return 1000;
     
-    if (term_stat)
+    else if (term_stat == other)
         return -1000;
     
     
@@ -306,7 +288,7 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
             if (child_weight <= node->alpha) {
                 // MAX ensures we will never go here
                 toR = child_weight;
-                goto done;
+                break;
             }
             node->beta = (node->beta < child_weight ? node->beta : child_weight);
         } else {
@@ -314,7 +296,7 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
             if (child_weight >= node->beta) {
                 // MIN ensures we will never go here
                 toR = child_weight;
-                goto done;
+                break;
             }
             node->alpha = (node->alpha > child_weight ? node->alpha : child_weight);
         }
@@ -336,7 +318,6 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
         
     }
     toR = best_weight;
-done:
     for (int i = 0; i < validMoves; i++) {
         freeGameState(possibleMoves[i]);
     }
@@ -367,8 +348,9 @@ int AI::computerMove(int look_ahead, Board board) {
 
 void AI::freeGameState(Board* board) {
     board->refs--;
-    if(board->refs <=0)
-        board->init();
+    if(board->refs <=0){;
+        //free(board);
+    }
 }
 
 void AI::retainGameState(Board* board) {

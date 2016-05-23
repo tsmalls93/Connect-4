@@ -33,7 +33,7 @@ private:
     void endGame(bool wasTie);
     
     // Member Variables
-    Board connect4; ///< The connect 4 board
+    Board connect4 = *(Board*) malloc(sizeof(Board)); ///< The connect 4 board
     int currentPlayer; ///< The index of the current player
     State gameState; ///< The state of the game
     AI ai; ///< The AI player
