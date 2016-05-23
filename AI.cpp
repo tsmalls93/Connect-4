@@ -223,7 +223,8 @@ int AI::desComp(const void* a, const void* b) {
 }
 
 int AI::getWeight(GameTreeNode* node, int movesLeft) {
-    int toR, move, best_weight;
+    int toR=0, move, best_weight;
+    bool breakflag = false;
     if (node->board->checkVictory()!=NO_VAL || movesLeft == 0)
         return heuristicForBoard(node->board, node->player, node->other_player);
     
@@ -280,7 +281,8 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
             if (child_weight <= node->alpha) {
                 // MAX ensures we will never go here
                 toR = child_weight;
-                goto done;
+                breakflag = true;
+                break;
             }
             node->beta = (node->beta < child_weight ? node->beta : child_weight);
         } else {
@@ -288,7 +290,8 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
             if (child_weight >= node->beta) {
                 // MIN ensures we will never go here
                 toR = child_weight;
-                goto done;
+                breakflag = true;
+                break;
             }
             node->alpha = (node->alpha > child_weight ? node->alpha : child_weight);
         }
@@ -309,8 +312,9 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
         
         
     }
-    toR = best_weight;
-done:
+    if(!breakflag)
+        toR = best_weight;
+    
     for (int i = 0; i < validMoves; i++) {
         freeGameState(possibleMoves[i]);
     }
