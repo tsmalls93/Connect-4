@@ -19,7 +19,7 @@ class MainGame {
 public:
     // Runs the main loop
     void run();
-    
+    //
 private:
     // Initializes the game
     void init();

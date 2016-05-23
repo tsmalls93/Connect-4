@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 //set depth
+//
 #define LOOK_AHEAD 5
 #define TABLE_SIZE 32000
 #define TABLE_BIN_SIZE 10
