@@ -14,7 +14,7 @@
 #include <vector>
 #include "AI.h"
 
-
+#define OFF_BOARD -2
 const int TIE = -1;
 // board values
 const int NO_VAL = 0;
@@ -28,7 +28,7 @@ public:
     int weight;
     int refs;
     // Initializes the board
-    Board* init();
+    void init();
     // Clears the board
     void clear();
     // Prints the board to standard output
@@ -45,15 +45,6 @@ public:
     
     bool slotFull(int slot) const;
     
-    int getHeightOfSlot(int slot) const{
-        for (int i = 0; i < 6; i++) {
-            if (getPlayerVal(slot, i) != NO_VAL) {
-                if(i-1>=0)
-                    return i;
-            }
-        }
-        return -1;
-    }
     int* board;
 private:
     

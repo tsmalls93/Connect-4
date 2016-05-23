@@ -17,7 +17,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#define OFF_BOARD -2
 #define LOOK_AHEAD 5
 #define TABLE_SIZE 32000
 #define TABLE_BIN_SIZE 10
@@ -50,17 +49,23 @@ typedef struct {
 
 class AI {
 public:
+    //constructor
     AI();
-    //Perform move given by alphaBeta
-    void performMove(Board &board);
+    //Evaluation function passes coordinates, board, player, returns int (score)
     int static countAt(Board* board, int x, int y, int player);
+    //finds the amount of connected pieces for a given player in an array, used in countAt
     int static getIncrementForArray(int* arr, int player);
+    //performs the evaluation function given the board and the players for the current move
     int static getHeuristic(Board board, int player, int other_player);
-    int canMove(Board board, int column);
+    //copies the board and returns said board after a given move
     Board* stateForMove(Board *board, int column, int player);
-    unsigned long long hashGameState(Board board);
-    int isGameStateEqual(Board *board1, Board *board2);
+    //creates a hash value for the board
+    unsigned long long hashBoard(Board board);
+    //checks to see if two boards are equal
+    int isBoardEqual(Board *board1, Board *board2);
+    //create new hash table
     TranspositionTable* newTable();
+    //find a board in the table
     Board* lookupInTable(TranspositionTable* t, Board* k);
     void addToTable(TranspositionTable* t, Board* k);
     void freeTranspositionTable(TranspositionTable* t);
@@ -76,7 +81,6 @@ public:
     void freeGameState(Board* board);
 private:
     //main game tree function (alpha-beta minimax)
-    AIMove alphaBeta(Board board, int depth, int player, AIMove alpha, AIMove beta);
     int CPU;
     int HUMAN;
 };

@@ -9,14 +9,12 @@
 #include "Board.h"
 
 //Set size of board
-Board* Board::init() {
-    Board *toR = (Board*)malloc(sizeof(Board));
-    toR->board = (int*) malloc(sizeof(int*) * 7 * 6);
-    toR->weight = 0;
-    toR->refs = 1;
-    toR->last_move = 0;
-	toR->clear();
-    return toR;
+void Board::init() {
+    this->board = (int*) malloc(sizeof(int*) * 7 * 6);
+    this->weight = 0;
+    this->refs = 1;
+    this->last_move = 0;
+	this->clear();
 }
 //Clear the board
 void Board::clear() {
@@ -164,7 +162,7 @@ void Board::dropInSlot(int slot, int player) {
 //Get the value of the board position
 int Board::getPlayerVal(int x, int y) const {
 	if (x<0 || x>6 || y<0 || y>5) {
-		return -1;
+		return OFF_BOARD;
 	}
 	else
 		return this->board[x * 6 + y];

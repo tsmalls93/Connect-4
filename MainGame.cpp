@@ -35,7 +35,7 @@ void MainGame::run(){
 //Start the game
 void MainGame::init(){
     gameState = State::PLAYING;
-    connect4 = *connect4.init();
+    connect4.init();
     currentPlayer = X_VAL;
     std::cout << "Welcome to Connect 4" << std::endl;
 }

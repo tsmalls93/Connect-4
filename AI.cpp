@@ -78,27 +78,19 @@ int AI::getHeuristic(Board board, int player, int other_player) {
     return toR;
 }
 
-int AI::canMove(Board board, int column) {
-    int y;
-    for (y = 0; y < 6; y++) {
-        if (board.getPlayerVal(column, y)==NO_VAL)
-            return 1;
-    }
-    
-    return 0;
-}
-
 Board* AI::stateForMove(Board* board, int column, int player) {
-    if (board==NULL)
+    if (board==NULL || board->board == NULL)
         return NULL;
     Board* toR = new Board();
     toR->init();
-    memcpy(&toR->board, &board->board, sizeof(int*)*7*6);
+    if(toR == NULL)
+        return NULL;
+    memcpy(toR->board, board->board, sizeof(int*)*7*6);
     toR->dropInSlot(column, player);
     return toR;
 }
 
-unsigned long long AI::hashGameState(Board board) {
+unsigned long long AI::hashBoard(Board board) {
     unsigned long long hash = 14695981039346656037Lu;
     for (int j = 0; j< 6; j++){
         for (int i = 0; i < 7; i++) {
@@ -109,7 +101,7 @@ unsigned long long AI::hashGameState(Board board) {
     return hash;
 }
 
-int AI::isGameStateEqual(Board* board1, Board* board2) {
+int AI::isBoardEqual(Board* board1, Board* board2) {
     for (int j=0; j<6; j++){
         for (int i = 0; i < 7; i++) {
             if (board1->getPlayerVal(i, j) == board2->getPlayerVal(i, j))
@@ -138,7 +130,7 @@ TranspositionTable* AI::newTable() {
 }
 
 Board* AI::lookupInTable(TranspositionTable* t, Board *k) {
-    int hv = hashGameState(*k) % TABLE_SIZE;
+    int hv = hashBoard(*k) % TABLE_SIZE;
     int i;
     Board** bin = t->bins[hv];
     for (i = 0; i < TABLE_BIN_SIZE; i++) {
@@ -146,7 +138,7 @@ Board* AI::lookupInTable(TranspositionTable* t, Board *k) {
             return NULL;
         }
         
-        if (isGameStateEqual(k, bin[i])) {
+        if (isBoardEqual(k, bin[i])) {
             return bin[i];
         }
     }
@@ -154,7 +146,7 @@ Board* AI::lookupInTable(TranspositionTable* t, Board *k) {
 }
 
 void AI::addToTable(TranspositionTable* t, Board* k) {
-    int hv = hashGameState(*k) % TABLE_SIZE;
+    int hv = hashBoard(*k) % TABLE_SIZE;
     Board** bin = t->bins[hv];
     for (int i = 0; i < TABLE_BIN_SIZE; i++) {
         if (bin[i] == NULL) {
@@ -238,7 +230,7 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
     Board** possibleMoves = (Board**) malloc(sizeof(Board*) * 7);
     int validMoves = 0;
     for (int possibleMove = 0; possibleMove < 7; possibleMove++) {
-        if (!canMove(*node->board, possibleMove)) {
+        if (node->board->slotFull(possibleMove)) {
             continue;
         }
         
@@ -288,7 +280,7 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
             if (child_weight <= node->alpha) {
                 // MAX ensures we will never go here
                 toR = child_weight;
-                break;
+                goto done;
             }
             node->beta = (node->beta < child_weight ? node->beta : child_weight);
         } else {
@@ -296,7 +288,7 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
             if (child_weight >= node->beta) {
                 // MIN ensures we will never go here
                 toR = child_weight;
-                break;
+                goto done;
             }
             node->alpha = (node->alpha > child_weight ? node->alpha : child_weight);
         }
@@ -318,6 +310,7 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
         
     }
     toR = best_weight;
+done:
     for (int i = 0; i < validMoves; i++) {
         freeGameState(possibleMoves[i]);
     }
@@ -349,7 +342,8 @@ int AI::computerMove(int look_ahead, Board board) {
 void AI::freeGameState(Board* board) {
     board->refs--;
     if(board->refs <=0){;
-        //free(board);
+        free(board->board);
+        free(board);
     }
 }
 
