@@ -157,7 +157,7 @@ void AI::addToTable(TranspositionTable* t, Board* k) {
         }
     }
     
-    fprintf(stderr, "Overflow in hash bin %d, won't store GameState\n", hv);
+    fprintf(stderr, "Overflow in hash bin %d, won't store Board\n", hv);
 }
 
 void AI::freeTranspositionTable(TranspositionTable* t) {
@@ -243,7 +243,6 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
     // order possibleMoves by the heuristic
     g_node = node;
     if (node->turn) {
-        // qsort_r is apparently non-standard, and won't work with emscripten. So we'll need to use a global.
         std::qsort(possibleMoves, validMoves, sizeof(Board*), ascComp);
     } else {
         std::qsort(possibleMoves, validMoves, sizeof(Board*), desComp);
@@ -252,7 +251,7 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
     best_weight = (node->turn ? INT_MIN : INT_MAX);
     
     for (move = 0; move < validMoves; move++) {
-        // see if the game state is already in the hash table
+        // see if the board is already in the hash table
         Board* inTable = lookupInTable(node->ht, possibleMoves[move]);
         int child_weight;
         int child_last_move;
@@ -273,9 +272,10 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
         possibleMoves[move]->weight = child_weight;
         addToTable(node->ht, possibleMoves[move]);
         
-        if (movesLeft == LOOK_AHEAD)
-            printf("Move %d has weight %d\n", child_last_move, child_weight);
-        
+        if (movesLeft == LOOK_AHEAD){
+            printf("Move %d has weight %d\n", child_last_move+1, child_weight);
+
+        }
         // alpha-beta pruning
         if (!node->turn) {
             // min node

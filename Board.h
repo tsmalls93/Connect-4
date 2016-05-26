@@ -9,7 +9,6 @@
 
 #ifndef Board_h
 #define Board_h
-
 #include <stdio.h>
 #include <iostream>
 #include <vector>

@@ -10,16 +10,18 @@
 #include "MainGame.h"
 //Main game loop
 void MainGame::run(){
-    init();
+    bool cheat = init();
     while (gameState != State::EXIT){
         connect4.print();
         // Say which player is playing
         if (currentPlayer == X_VAL) {
             printf("Human's turn!\n\n");
+            if (cheat)
+                ai.bestMove(&connect4, X_VAL, O_VAL, LOOK_AHEAD);
             playerMove(X_VAL);
         } else {
             printf("Computer's turn!\n\n");
-            aiMove();
+            aiMove(O_VAL);
         }
         int end = connect4.checkVictory();
         if (end!=NO_VAL){
@@ -34,11 +36,29 @@ void MainGame::run(){
     }
 }
 //Start the game
-void MainGame::init(){
+bool MainGame::init(){
     gameState = State::PLAYING;
     connect4.init();
     currentPlayer = X_VAL;
-    std::cout << "Welcome to Connect 4" << std::endl;
+    std::cout << "Welcome to Connect 4 AI" << std::endl;
+    std::cout << "Your only chance of winning is to play first," << std::endl;
+    std::cout << "therefore you will make the first move." << std::endl;
+    std::cout << "Do you want to cheat? y/n" << std::endl;
+    char cheat;
+    std::cin >> cheat;
+    if (!std::cin){
+        while(!std::cin){
+            std::cin.clear();
+            std::cin.ignore(255, '\n');
+            std::cout << "Invalid input, try again: ";
+            std::cin >> cheat;
+        }
+    }
+    if(cheat == 'y')
+        return true;
+    else
+        return false;
+
 }
 //Human move
 void MainGame::playerMove(int player){
@@ -63,8 +83,13 @@ void MainGame::playerMove(int player){
     connect4.dropInSlot(slot-1, player);
 }
 //CPU move
-void MainGame::aiMove(){
-    connect4.dropInSlot(ai.computerMove(LOOK_AHEAD, connect4), O_VAL);
+void MainGame::aiMove(int player){
+    int move = ai.computerMove(LOOK_AHEAD, connect4);
+    connect4.dropInSlot(move, player);
+    std::cout << "Computer chose slot " << move+1 << std::endl;
+    std::cout << "Press return" << std::endl;
+    //std::cin.ignore();
+    //std::cin.ignore();
 }
 //Switch players
 void MainGame::changePlayer(){

@@ -33,6 +33,7 @@ void Board::print() const {
             if (getPlayerVal(i, j)==NO_VAL)
                 std::cout << " " << ")";
             else if(getPlayerVal(i, j)==X_VAL){
+                
                 std::cout << "X" << ")";
             } else {
                 std::cout << "O" << ")";

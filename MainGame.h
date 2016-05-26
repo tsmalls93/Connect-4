@@ -22,11 +22,11 @@ public:
     //
 private:
     // Initializes the game
-    void init();
+    bool init();
     // Performs a human controlled move
     void playerMove(int player);
     // Performs an AI move
-    void aiMove();
+    void aiMove(int player);
     // Changes players
     void changePlayer();
     // Ends a game and prompts for quit or re-try
