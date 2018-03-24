@@ -10,29 +10,34 @@
 #include "AI.h"
 using namespace std;
 
+//Yes I know this is a global, trust me I know what I'm doing
+GameTreeNode* g_node = NULL;
+
 AI::AI(){
     HUMAN = X_VAL;
     CPU = O_VAL;
 }
 
 int AI::getIncrementForArray(int* arr, int player) {
-    int toR = 0;
+    int inc = 0;
     int i;
+    //count the connected coins for the player in the given array
     for (i = 0; i < 4; i++) {
         if (arr[i] == player) {
-            toR = 1;
+            inc = 1;
             continue;
         }
-        
+        //other player coin is in the way of a 4 in a row
         if (arr[i] != player && arr[i] != NO_VAL) {
             return 0;
         }
     }
     
-    return toR;
+    return inc;
 }
 
 int AI::countAt(Board* board, int x, int y, int player) {
+    //count up all of the connected pieces
     
     // check across
     int found = 0;
@@ -67,31 +72,34 @@ int AI::countAt(Board* board, int x, int y, int player) {
 }
 
 int AI::getHeuristic(Board board, int player, int other_player) {
-    int toR = 0;
+    //what is the state of the board?
+    int count = 0;
     int x, y;
     for (x = 0; x < 7; x++) {
         for (y = 0; y < 6; y++) {
-            toR += countAt(&board, x, y, player);
-            toR -= countAt(&board, x, y, other_player);
+            count += countAt(&board, x, y, player);
+            count -= countAt(&board, x, y, other_player);
         }
     }
     
-    return toR;
+    return count;
 }
 
 Board* AI::stateForMove(Board* board, int column, int player) {
+    //drop a coin in a copy of the board
     if (board==NULL || board->board == NULL)
         return NULL;
-    Board* toR = new Board();
-    toR->init();
-    if(toR == NULL)
+    Board* temp = new Board();
+    temp->init();
+    if(temp == NULL)
         return NULL;
-    memcpy(toR->board, board->board, sizeof(int*)*7*6);
-    toR->dropInSlot(column, player);
-    return toR;
+    memcpy(temp->board, board->board, sizeof(int*)*7*6);
+    temp->dropInSlot(column, player);
+    return temp;
 }
 
 unsigned long long AI::hashBoard(Board board) {
+    //create a hash number for the board
     unsigned long long hash = 14695981039346656037Lu;
     for (int j = 0; j< 6; j++){
         for (int i = 0; i < 7; i++) {
@@ -103,6 +111,7 @@ unsigned long long AI::hashBoard(Board board) {
 }
 
 int AI::isBoardEqual(Board* board1, Board* board2) {
+    //compare two boards to see if they're equal
     for (int j=0; j<6; j++){
         for (int i = 0; i < 7; i++) {
             if (board1->getPlayerVal(i, j) == board2->getPlayerVal(i, j))
@@ -118,6 +127,8 @@ int AI::isBoardEqual(Board* board1, Board* board2) {
 
 TranspositionTable* AI::newTable() {
     int i, j;
+    //create a new Transposition Table
+    //Sorry C++ I want to use malloc not new, no hard feelings
     TranspositionTable* toR = (TranspositionTable*) malloc(sizeof(TranspositionTable));
     toR->bins = (Board***) malloc(sizeof(Board**) * TABLE_SIZE);
     for (i = 0; i < TABLE_SIZE; i++) {
@@ -131,6 +142,7 @@ TranspositionTable* AI::newTable() {
 }
 
 Board* AI::lookupInTable(TranspositionTable* t, Board *k) {
+    //find the board in the Transposition Table
     int hv = hashBoard(*k) % TABLE_SIZE;
     int i;
     Board** bin = t->bins[hv];
@@ -147,6 +159,7 @@ Board* AI::lookupInTable(TranspositionTable* t, Board *k) {
 }
 
 void AI::addToTable(TranspositionTable* t, Board* k) {
+    //add the board to the Transposition Table, the table is for Dynamic Programming
     int hv = hashBoard(*k) % TABLE_SIZE;
     Board** bin = t->bins[hv];
     for (int i = 0; i < TABLE_BIN_SIZE; i++) {
@@ -161,6 +174,7 @@ void AI::addToTable(TranspositionTable* t, Board* k) {
 }
 
 void AI::freeTranspositionTable(TranspositionTable* t) {
+    //free up the table
     int i, j;
     for (i = 0; i < TABLE_SIZE; i++) {
         for (j = 0; j < TABLE_BIN_SIZE; j++) {
@@ -175,24 +189,25 @@ void AI::freeTranspositionTable(TranspositionTable* t) {
 }
 
 GameTreeNode* AI::newGameTreeNode(Board* gs, int player, int other, int turn, int alpha, int beta, TranspositionTable* ht) {
-    GameTreeNode* toR = (GameTreeNode*) malloc(sizeof(GameTreeNode));
-    toR->board = gs;
-    toR->player = player;
-    toR->other_player = other;
-    toR->turn = turn;
-    toR->alpha = alpha;
-    toR->beta = beta;
-    toR->best_move = -1;
-    toR->ht = ht;
-    return toR;
+    //allocate and setup a new GameTreeNode
+    GameTreeNode* node = (GameTreeNode*) malloc(sizeof(GameTreeNode));
+    node->board = gs;
+    node->player = player;
+    node->other_player = other;
+    node->turn = turn;
+    node->alpha = alpha;
+    node->beta = beta;
+    node->best_move = -1;
+    node->ht = ht;
+    return node;
 }
 
 int AI::heuristicForBoard(Board* board, int player, int other) {
+    //See if there is a winner or just get a general score for the board
     if (board->checkVictory()==TIE)
         return 0;
     
-    int term_stat = board
-    ->checkVictory();
+    int term_stat = board->checkVictory();
     if (term_stat == player)
         return 1000;
     
@@ -203,11 +218,6 @@ int AI::heuristicForBoard(Board* board, int player, int other) {
     return getHeuristic(*board, player, other);
     
 }
-
-
-// using a global instead of qsort_r because of emscripten support
-
-GameTreeNode* g_node = NULL;
 
 
 int AI::ascComp(const void* a, const void* b) {
@@ -224,14 +234,17 @@ int AI::desComp(const void* a, const void* b) {
 }
 
 int AI::getWeight(GameTreeNode* node, int movesLeft) {
-    int toR=0, move, best_weight;
+    //this function is just an alpha-beta algorithm, reference Wikipedia or this will make no sense
+    int weight=0, move, best_weight;
     bool breakflag = false;
     if (node->board->checkVictory()!=NO_VAL || movesLeft == 0)
         return heuristicForBoard(node->board, node->player, node->other_player);
-    
+    //we have 7 possible moves
     Board** possibleMoves = (Board**) malloc(sizeof(Board*) * 7);
     int validMoves = 0;
+    //try all of the moves available and store them
     for (int possibleMove = 0; possibleMove < 7; possibleMove++) {
+        //ignore full slots
         if (node->board->slotFull(possibleMove)) {
             continue;
         }
@@ -240,48 +253,49 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
         validMoves++;
     }
     
-    // order possibleMoves by the heuristic
+    // order possibleMoves by the heuristic (quality)
     g_node = node;
-    if (node->turn) {
+    if (node->turn) { //our turn
         std::qsort(possibleMoves, validMoves, sizeof(Board*), ascComp);
-    } else {
+    } else { //opponent turn
         std::qsort(possibleMoves, validMoves, sizeof(Board*), desComp);
     }
-    
+    //best possible weight is infinity if it is my turn
+    //we make it negative infinity for the opposing player
     best_weight = (node->turn ? INT_MIN : INT_MAX);
     
     for (move = 0; move < validMoves; move++) {
-        // see if the board is already in the hash table
+        // see if the board is already in the hash table to speed things up otherwise we will have to create a new node
         Board* inTable = lookupInTable(node->ht, possibleMoves[move]);
         int child_weight;
         int child_last_move;
         if (inTable != NULL) {
+            //found it in the table, yay for dynamic programming
             child_weight = inTable->weight;
             child_last_move = possibleMoves[move]->last_move;
             
         } else {
-            GameTreeNode* child = newGameTreeNode(possibleMoves[move], node->player, node->other_player, !(node->turn),
-                                                  node->alpha, node->beta, node->ht);
+            //this board is new, let's allocate a new GameTreeNode and start the recursion
+            GameTreeNode* child = newGameTreeNode(possibleMoves[move], node->player, node->other_player, !(node->turn), node->alpha, node->beta, node->ht);
             child_weight = getWeight(child, movesLeft - 1);
             child_last_move = child->board->last_move;
             free(child);
         }
         
-        
-        
         possibleMoves[move]->weight = child_weight;
         addToTable(node->ht, possibleMoves[move]);
         
+        //go ahead and print out the weights, so we can see what the computer sees
         if (movesLeft == LOOK_AHEAD){
             printf("Move %d has weight %d\n", child_last_move+1, child_weight);
 
         }
-        // alpha-beta pruning
+        // alpha-beta pruning, again go to Wikipedia
         if (!node->turn) {
             // min node
             if (child_weight <= node->alpha) {
                 // MAX ensures we will never go here
-                toR = child_weight;
+                weight = child_weight;
                 breakflag = true;
                 break;
             }
@@ -290,7 +304,7 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
             // max node
             if (child_weight >= node->beta) {
                 // MIN ensures we will never go here
-                toR = child_weight;
+                weight = child_weight;
                 breakflag = true;
                 break;
             }
@@ -313,18 +327,21 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
         
         
     }
+    //did we break out during the pruning?
     if(!breakflag)
-        toR = best_weight;
+        weight = best_weight;
     
+    //cleanup
     for (int i = 0; i < validMoves; i++) {
         freeGameState(possibleMoves[i]);
     }
     
     free(possibleMoves);
-    return toR;
+    return weight;
 }
 
 int AI::getBestMove(GameTreeNode* node, int movesLeft) {
+    //call our alpha-beta algorithm to look into the future based on movesLeft
     getWeight(node, movesLeft);
     return node->best_move;
 }
@@ -332,6 +349,7 @@ int AI::getBestMove(GameTreeNode* node, int movesLeft) {
 
 
 int AI::bestMove(Board* gs, int player, int other_player, int look_ahead) {
+    //get the best column to drop our coin in
     TranspositionTable* t1 = newTable();
     GameTreeNode* n = newGameTreeNode(gs, player, other_player, 1, INT_MIN, INT_MAX, t1);
     int move = getBestMove(n, look_ahead);
@@ -341,10 +359,12 @@ int AI::bestMove(Board* gs, int player, int other_player, int look_ahead) {
 }
 
 int AI::computerMove(int look_ahead, Board board) {
+    //call our function that allows the computer to cheat the game
     return bestMove(&board, CPU, HUMAN, look_ahead);
 }
 
 void AI::freeGameState(Board* board) {
+    //decrement the refs and free the given board
     board->refs--;
     if(board->refs <=0){;
         free(board->board);
@@ -353,5 +373,6 @@ void AI::freeGameState(Board* board) {
 }
 
 void AI::retainGameState(Board* board) {
+    //increment the refs
     board->refs++;
 }
