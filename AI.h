@@ -17,9 +17,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-//set depth
-//
-#define LOOK_AHEAD 5
+
+#define LOOK_AHEAD 5 //set depth of tree
 #define TABLE_SIZE 32000
 #define TABLE_BIN_SIZE 10
 //stating this class exists
@@ -89,7 +88,6 @@ public:
     //go back one level or if the root node, free the board
     void freeGameState(Board* board);
 private:
-    //main game tree function (alpha-beta minimax)
     int CPU;
     int HUMAN;
 };

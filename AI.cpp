@@ -256,9 +256,9 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
     // order possibleMoves by the heuristic (quality)
     g_node = node;
     if (node->turn) { //our turn
-        std::qsort(possibleMoves, validMoves, sizeof(Board*), ascComp);
+        qsort(possibleMoves, validMoves, sizeof(Board*), ascComp);
     } else { //opponent turn
-        std::qsort(possibleMoves, validMoves, sizeof(Board*), desComp);
+        qsort(possibleMoves, validMoves, sizeof(Board*), desComp);
     }
     //best possible weight is infinity if it is my turn
     //we make it negative infinity for the opposing player
