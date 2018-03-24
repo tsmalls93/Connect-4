@@ -28,7 +28,7 @@ void MainGame::run(){
             endGame(end == TIE);
         } else {
             changePlayer();
-            // clear screen
+            // clear screen by printing a bunch of new lines
             for (int i = 0; i < 5; i++) {
                 printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
             }
