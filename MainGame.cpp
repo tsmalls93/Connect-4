@@ -88,8 +88,8 @@ void MainGame::aiMove(int player){
     connect4.dropInSlot(move, player);
     std::cout << "Computer chose slot " << move+1 << std::endl;
     std::cout << "Press return" << std::endl;
-    //std::cin.ignore();
-    //std::cin.ignore();
+    std::cin.ignore();
+    std::cin.ignore();
 }
 //Switch players
 void MainGame::changePlayer(){
