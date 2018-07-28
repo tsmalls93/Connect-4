@@ -46,8 +46,8 @@ bool MainGame::init(){
     std::cout << "Do you want to cheat? y/n" << std::endl;
     char cheat;
     std::cin >> cheat;
-    if (!std::cin){
-        while(!std::cin){
+    if (!std::cin || (cheat != 'y' && cheat != 'n')){
+        while(!std::cin || (cheat != 'y' && cheat != 'n')){
             std::cin.clear();
             std::cin.ignore(255, '\n');
             std::cout << "Invalid input, try again: ";
@@ -120,7 +120,7 @@ void MainGame::endGame(bool wasTie){
         gameState = State::EXIT;
     } else {
         // Re init the game
-        init();
+        run();
     }
 }
 
