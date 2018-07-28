@@ -346,8 +346,8 @@ int AI::getBestMove(GameTreeNode* node, int movesLeft) {
         if (temp->slotFull(i)){
             continue;
         }
-        temp->dropInSlot(i, O_VAL);
-        if (temp->checkVictory() == O_VAL){
+        temp->dropInSlot(i, node->player);
+        if (temp->checkVictory() == node->player){
             std::cout << "Dropping in slot " << i+1 << " will win the game." << std::endl;
             return i;
         }
@@ -364,7 +364,7 @@ int AI::getBestMove(GameTreeNode* node, int movesLeft) {
 int AI::bestMove(Board* gs, int player, int other_player, int look_ahead) {
     //get the best column to drop our coin in
     TranspositionTable* t1 = newTable();
-    GameTreeNode* n = newGameTreeNode(gs, player, other_player, 0, INT_MIN, INT_MAX, t1);
+    GameTreeNode* n = newGameTreeNode(gs, player, other_player, player, INT_MIN, INT_MAX, t1);
     int move = getBestMove(n, look_ahead);
     free(n);
     freeTranspositionTable(t1);
