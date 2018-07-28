@@ -123,8 +123,6 @@ int AI::isBoardEqual(Board* board1, Board* board2) {
     return 1;
 }
 
-
-
 TranspositionTable* AI::newTable() {
     int i, j;
     //create a new Transposition Table
@@ -219,7 +217,6 @@ int AI::heuristicForBoard(Board* board, int player, int other) {
     
 }
 
-
 int AI::ascComp(const void* a, const void* b) {
     GameTreeNode* node = g_node;
     return heuristicForBoard(*(Board**) a, node->player, node->other_player) -heuristicForBoard(*(Board**) b, node->player, node->other_player);
@@ -239,7 +236,7 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
     bool breakflag = false;
     if (node->board->checkVictory()!=NO_VAL || movesLeft == 0)
         return heuristicForBoard(node->board, node->player, node->other_player);
-    //we have 7 possible moves
+    //we have at most 7 possible moves
     Board** possibleMoves = (Board**) malloc(sizeof(Board*) * 7);
     int validMoves = 0;
     //try all of the moves available and store them
@@ -341,6 +338,22 @@ int AI::getWeight(GameTreeNode* node, int movesLeft) {
 }
 
 int AI::getBestMove(GameTreeNode* node, int movesLeft) {
+    //check if winning move is available before going into recursion
+    Board* temp = new Board();
+    temp->init();
+    memcpy(temp->board, node->board->board, sizeof(int*)*7*6);
+    for (int i = 0; i < 7; i++){
+        if (temp->slotFull(i)){
+            continue;
+        }
+        temp->dropInSlot(i, O_VAL);
+        if (temp->checkVictory() == O_VAL){
+            std::cout << "Dropping in slot " << i+1 << " will win the game." << std::endl;
+            return i;
+        }
+        temp->init();
+        memcpy(temp->board, node->board->board, sizeof(int*)*7*6);
+    }
     //call our alpha-beta algorithm to look into the future based on movesLeft
     getWeight(node, movesLeft);
     return node->best_move;
@@ -351,7 +364,7 @@ int AI::getBestMove(GameTreeNode* node, int movesLeft) {
 int AI::bestMove(Board* gs, int player, int other_player, int look_ahead) {
     //get the best column to drop our coin in
     TranspositionTable* t1 = newTable();
-    GameTreeNode* n = newGameTreeNode(gs, player, other_player, 1, INT_MIN, INT_MAX, t1);
+    GameTreeNode* n = newGameTreeNode(gs, player, other_player, 0, INT_MIN, INT_MAX, t1);
     int move = getBestMove(n, look_ahead);
     free(n);
     freeTranspositionTable(t1);
