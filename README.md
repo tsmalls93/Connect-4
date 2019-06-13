@@ -1,27 +1,24 @@
 # Connect 4 game with AI
 
-## Building with g++
+## Building and running with g++
 First clone the repo and run the following command in the local repo directory:
 
 ```shell
 $ g++ -std=c++11 main.cpp AI.cpp MainGame.cpp Board.cpp -o Connect_4
+$ ./Connect_4
 ```
 
-## Building with CMake
+## Building and running with CMake
 First clone down the repo and run the following commands in the local repo directory (you will need CMake 3.10 or higher):
 
 ```shell
 $ cmake -H. -Bbuild
 $ cmake --build build -- -j3
-```
-
-## Running
-To run the executable, perform the following commands in the repo:
-
-```shell
 $ cd build
 $ ./Connect_4
 ```
+
+## Playing
 
 You will be asked if you want to cheat, and it is probably your only chance at winning.
 Yet for it to be fun I recommend saying no. Just key in `y` or `n` and hit enter.
