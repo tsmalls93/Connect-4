@@ -1,0 +1,13 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Compile
+      run: g++ -std=c++11 main.cpp AI.cpp MainGame.cpp Board.cpp -o Connect_4
